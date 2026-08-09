@@ -1,0 +1,42 @@
+{
+  "name": "CommissionRequest",
+  "type": "object",
+  "properties": {
+    "series": {
+      "type": "string",
+      "enum": [
+        "portrait",
+        "mixed"
+      ]
+    },
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "pet_name": {
+      "type": "string"
+    },
+    "photo_url": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "in_progress",
+        "done"
+      ],
+      "default": "new"
+    }
+  },
+  "required": [
+    "series",
+    "name",
+    "email"
+  ]
+}

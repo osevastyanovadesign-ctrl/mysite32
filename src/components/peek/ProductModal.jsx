@@ -5,16 +5,14 @@ import { Image } from "@/components/ui/image";
 import { useCart } from "./CartContext";
 import { useLang } from "./LanguageContext";
 import { MASCOT_DACHSHUND } from "@/data/products";
-import { useNavigate } from 'react-router-dom'; // ← ДОБАВИТЬ
 
 export default function ProductModal({ product, onClose }) {
   const { add } = useCart();
   const { t, lang } = useLang();
   const [zoom, setZoom] = React.useState(false);
-  const navigate = useNavigate(); // ← ДОБАВИТЬ
 
   React.useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && onClose();
+    const onKey = (e) => e.key === "Escape" && handleClose();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
@@ -23,10 +21,11 @@ export default function ProductModal({ product, onClose }) {
     };
   }, [onClose]);
 
-  // Функция для закрытия с возвратом в истории
+  // Функция для закрытия модалки без ухода назад в истории
   const handleClose = () => {
     onClose();
-    navigate(-1); // ← ДОБАВИТЬ — возврат на шаг назад
+    // Убираем якорь из URL, но не уходим назад
+    window.history.replaceState(null, '', window.location.pathname);
   };
 
   return (
@@ -38,7 +37,7 @@ export default function ProductModal({ product, onClose }) {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[70] flex items-end md:items-center justify-center p-0 md:p-6"
         >
-          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} /> {/* ← ИЗМЕНИТЬ onClose → handleClose */}
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} />
           <motion.div
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -47,14 +46,13 @@ export default function ProductModal({ product, onClose }) {
             className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
           >
             <button
-              onClick={handleClose} // ← ИЗМЕНИТЬ onClose → handleClose
+              onClick={handleClose}
               className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
               aria-label="Close"
             >
               <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
-            {/* Остальной код без изменений */}
             <div className="relative h-[40vh] md:h-[70vh] overflow-hidden bg-secondary/40">
               <Image
                 src={product.image}
@@ -92,7 +90,7 @@ export default function ProductModal({ product, onClose }) {
               <button
                 onClick={() => {
                   add(product);
-                  handleClose(); // ← ИЗМЕНИТЬ onClose() → handleClose()
+                  handleClose();
                 }}
                 className="mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-primary-foreground font-medium hover:opacity-90 transition-opacity"
               >

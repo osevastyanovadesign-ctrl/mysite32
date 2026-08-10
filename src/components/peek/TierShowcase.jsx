@@ -52,17 +52,15 @@ export default function TierShowcase({ tier }) {
       <div className="relative">
 
         {/* Full-width editorial stage */}
-        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden">
+        <div className="relative w-screen ml-[calc(50%-50vw)] aspect-[4/3] overflow-hidden bg-secondary/40">
 
           {/* Large calm editorial photograph */}
-          <div className="relative w-full overflow-hidden bg-secondary/40">
-            <Image
-              src={tier.image}
-              alt={tier.alt[lang]}
-              className="w-full aspect-[4/3] object-cover"
-              fittingType="fill"
-            />
-          </div>
+          <Image
+            src={tier.image}
+            alt={tier.alt[lang]}
+            className="absolute inset-0 w-full h-full object-cover"
+            fittingType="fill"
+          />
 
           {/* Vertical order card */}
           <div className="absolute inset-0 flex items-center justify-end pr-10">

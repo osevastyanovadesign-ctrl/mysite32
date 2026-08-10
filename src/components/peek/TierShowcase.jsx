@@ -83,7 +83,7 @@ export default function TierShowcase({ tier }) {
               w-[72%]
               sm:w-[48%]
               md:w-[34%]
-              lg:w-[27%]
+              lg:w-[22%]
               aspect-[3/4]
               bg-background
               p-6

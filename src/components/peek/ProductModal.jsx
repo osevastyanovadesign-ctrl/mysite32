@@ -11,22 +11,37 @@ export default function ProductModal({ product, onClose }) {
   const { t, lang } = useLang();
   const [zoom, setZoom] = React.useState(false);
 
-  React.useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && handleClose();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
-  // Функция для закрытия модалки без ухода назад в истории
+  // Функция для безопасного закрытия с разблокировкой скролла
   const handleClose = () => {
     onClose();
-    // Убираем якорь из URL, но не уходим назад
+    // Принудительно разблокируем скролл
+    document.body.style.overflow = "";
+    document.body.style.position = "";
+    document.body.style.width = "";
+    // Убираем якорь из URL
     window.history.replaceState(null, '', window.location.pathname);
   };
+
+  React.useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        handleClose();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    // Блокируем скролл при открытии
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.width = "100%";
+    
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      // Разблокируем скролл при размонтировании
+      document.body.style.overflow = "";
+      document.body.style.position = "";
+      document.body.style.width = "";
+    };
+  }, [onClose]);
 
   return (
     <AnimatePresence>

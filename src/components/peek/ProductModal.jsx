@@ -11,14 +11,8 @@ export default function ProductModal({ product, onClose }) {
   const { t, lang } = useLang();
   const [zoom, setZoom] = React.useState(false);
 
-  // ЕДИНСТВЕННОЕ ДОБАВЛЕНИЕ — функция-обёртка
-  const handleClose = () => {
-    onClose();
-    // Ничего лишнего — просто вызываем onClose
-  };
-
   React.useEffect(() => {
-    const onKey = (e) => e.key === "Escape" && handleClose(); // ← changed
+    const onKey = (e) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
     return () => {
@@ -36,7 +30,7 @@ export default function ProductModal({ product, onClose }) {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[70] flex items-end md:items-center justify-center p-0 md:p-6"
         >
-          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} /> {/* ← changed */}
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={onClose} />
           <motion.div
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -45,13 +39,14 @@ export default function ProductModal({ product, onClose }) {
             className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
           >
             <button
-              onClick={handleClose} {/* ← changed */}
+              onClick={onClose}
               className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
               aria-label="Close"
             >
               <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
+            {/* Image portrait — 70vh */}
             <div className="relative h-[40vh] md:h-[70vh] overflow-hidden bg-secondary/40">
               <Image
                 src={product.image}
@@ -70,6 +65,7 @@ export default function ProductModal({ product, onClose }) {
               </button>
             </div>
 
+            {/* Detail — title vertically aligned left */}
             <div className="p-8 md:p-12 flex flex-col justify-center">
               <p className="text-sm uppercase tracking-[0.25em] text-primary mb-3">{product.animal[lang]}</p>
               <h2 className="font-display text-5xl md:text-6xl leading-[1.05] text-foreground">
@@ -89,7 +85,7 @@ export default function ProductModal({ product, onClose }) {
               <button
                 onClick={() => {
                   add(product);
-                  handleClose(); // ← changed
+                  onClose();
                 }}
                 className="mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-primary-foreground font-medium hover:opacity-90 transition-opacity"
               >

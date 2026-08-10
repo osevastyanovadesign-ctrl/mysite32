@@ -11,35 +11,19 @@ export default function ProductModal({ product, onClose }) {
   const { t, lang } = useLang();
   const [zoom, setZoom] = React.useState(false);
 
-  // Функция для безопасного закрытия с разблокировкой скролла
+  // ЕДИНСТВЕННОЕ ДОБАВЛЕНИЕ — функция-обёртка
   const handleClose = () => {
     onClose();
-    // Принудительно разблокируем скролл
-    document.body.style.overflow = "";
-    document.body.style.position = "";
-    document.body.style.width = "";
-    // Убираем якорь из URL
-    window.history.replaceState(null, '', window.location.pathname);
+    // Ничего лишнего — просто вызываем onClose
   };
 
   React.useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "Escape") {
-        handleClose();
-      }
-    };
+    const onKey = (e) => e.key === "Escape" && handleClose(); // ← changed
     window.addEventListener("keydown", onKey);
-    // Блокируем скролл при открытии
     document.body.style.overflow = "hidden";
-    document.body.style.position = "fixed";
-    document.body.style.width = "100%";
-    
     return () => {
       window.removeEventListener("keydown", onKey);
-      // Разблокируем скролл при размонтировании
       document.body.style.overflow = "";
-      document.body.style.position = "";
-      document.body.style.width = "";
     };
   }, [onClose]);
 
@@ -52,7 +36,7 @@ export default function ProductModal({ product, onClose }) {
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-[70] flex items-end md:items-center justify-center p-0 md:p-6"
         >
-          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} />
+          <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={handleClose} /> {/* ← changed */}
           <motion.div
             initial={{ y: 40, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -61,7 +45,7 @@ export default function ProductModal({ product, onClose }) {
             className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
           >
             <button
-              onClick={handleClose}
+              onClick={handleClose} {/* ← changed */}
               className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
               aria-label="Close"
             >
@@ -105,7 +89,7 @@ export default function ProductModal({ product, onClose }) {
               <button
                 onClick={() => {
                   add(product);
-                  handleClose();
+                  handleClose(); // ← changed
                 }}
                 className="mt-10 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-primary-foreground font-medium hover:opacity-90 transition-opacity"
               >

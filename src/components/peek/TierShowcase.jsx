@@ -45,8 +45,9 @@ export default function TierShowcase({ tier }) {
 
   return (
     <Reveal>
-      <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+      <div className="relative">
 
+        {/* Large editorial image */}
         <motion.div
           ref={ref}
           onMouseMove={handleMove}
@@ -56,7 +57,7 @@ export default function TierShowcase({ tier }) {
             rotateY,
             transformPerspective: 900,
           }}
-          className="group relative overflow-hidden squircle-lg bg-secondary/40 shadow-xl shadow-primary/5"
+          className="group relative w-full overflow-hidden squircle-lg bg-secondary/40 shadow-xl shadow-primary/5"
         >
           <Image
             src={tier.image}
@@ -66,34 +67,52 @@ export default function TierShowcase({ tier }) {
           />
         </motion.div>
 
-        <div className="md:pl-4">
-          {Array.isArray(specs) && (
-            <ul className="space-y-4 mb-8">
-              {specs.map((s, i) => (
-                <li
-                  key={i}
-                  className="flex items-start gap-3 text-muted-foreground leading-relaxed"
-                >
-                  <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                  <span>{s}</span>
-                </li>
-              ))}
-            </ul>
-          )}
+        {/* Vertical order card */}
+        <div className="relative z-10 -mt-24 ml-auto mr-6 md:-mt-40 md:mr-10 w-[82%] sm:w-[62%] md:w-[38%] lg:w-[32%] aspect-[3/4] bg-background p-6 md:p-8 shadow-2xl">
 
-          <button
-            onClick={() => setOpen(true)}
-            className="inline-flex items-center gap-2 text-sm text-primary group"
-          >
-            <span className="border-b border-primary/40 pb-0.5">
-              {t(`tiers.${tier.id}.cta`)}
-            </span>
+          <div className="flex h-full flex-col justify-between">
 
-            <ArrowRight
-              className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
-              strokeWidth={1.5}
-            />
-          </button>
+            <div>
+              <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                {t(`tiers.${tier.id}.badge`)}
+              </div>
+
+              <h3 className="mt-4 text-2xl md:text-3xl font-medium tracking-tight">
+                {t(`tiers.${tier.id}.name`)}
+              </h3>
+
+              <div className="mt-6">
+                {Array.isArray(specs) && (
+                  <ul className="space-y-4">
+                    {specs.map((s, i) => (
+                      <li
+                        key={i}
+                        className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed"
+                      >
+                        <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setOpen(true)}
+              className="inline-flex w-fit items-center gap-2 text-sm text-primary group/cta"
+            >
+              <span className="border-b border-primary/40 pb-0.5">
+                {t(`tiers.${tier.id}.cta`)}
+              </span>
+
+              <ArrowRight
+                className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-1"
+                strokeWidth={1.5}
+              />
+            </button>
+
+          </div>
         </div>
 
       </div>

@@ -1,4 +1,3 @@
-```tsx
 import React, { useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
@@ -52,87 +51,90 @@ export default function TierShowcase({ tier }) {
       <div className="relative">
 
         {/* Full-width editorial stage */}
-        <div className="relative w-screen ml-[calc(50%-50vw)] aspect-[4/3] overflow-hidden bg-secondary/40">
+        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden">
 
           {/* Large calm editorial photograph */}
-          <Image
-            src={tier.image}
-            alt={tier.alt[lang]}
-            className="absolute inset-0 w-full h-full object-cover"
-            fittingType="fill"
-          />
+          <div className="relative w-full overflow-hidden bg-secondary/40">
+            <Image
+              src={tier.image}
+              alt={tier.alt[lang]}
+              className="w-full aspect-[4/3] object-cover"
+              fittingType="fill"
+            />
+          </div>
 
           {/* Vertical order card */}
-          <div className="absolute inset-0 flex items-center justify-end pr-10">
-            <motion.div
-              ref={cardRef}
-              onMouseMove={handleCardMove}
-              onMouseLeave={resetCard}
-              style={{
-                rotateX,
-                rotateY,
-                transformPerspective: 900,
-              }}
-              className="
-                group
-                relative
-                z-10
-                w-[72%]
-                sm:w-[48%]
-                md:w-[34%]
-                lg:w-[22%]
-                aspect-[3/4]
-                bg-background
-                p-6
-                md:p-8
-                shadow-2xl
-              "
-            >
-              <div className="flex h-full flex-col justify-between">
+          <motion.div
+            ref={cardRef}
+            onMouseMove={handleCardMove}
+            onMouseLeave={resetCard}
+            style={{
+              rotateX,
+              rotateY,
+              transformPerspective: 900,
+            }}
+            className="
+              group
+              absolute
+              z-10
+              right-6
+              top-1/2
+              -translate-y-1/2
+              w-[72%]
+              sm:w-[48%]
+              md:w-[34%]
+              lg:w-[22%]
+              aspect-[3/4]
+              bg-background
+              p-6
+              md:p-8
+              shadow-2xl
+            "
+          >
+            <div className="flex h-full flex-col justify-between">
 
-                <div>
-                  <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
-                    {t(`tiers.${tier.id}.badge`)}
-                  </div>
-
-                  <h3 className="mt-4 text-2xl md:text-3xl font-medium tracking-tight">
-                    {t(`tiers.${tier.id}.name`)}
-                  </h3>
-
-                  <div className="mt-6">
-                    {Array.isArray(specs) && (
-                      <ul className="space-y-4">
-                        {specs.map((s, i) => (
-                          <li
-                            key={i}
-                            className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed"
-                          >
-                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                            <span>{s}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
+              <div>
+                <div className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
+                  {t(`tiers.${tier.id}.badge`)}
                 </div>
 
-                <button
-                  onClick={() => setOpen(true)}
-                  className="inline-flex w-fit items-center gap-2 text-sm text-primary group/cta"
-                >
-                  <span className="border-b border-primary/40 pb-0.5">
-                    {t(`tiers.${tier.id}.cta`)}
-                  </span>
+                <h3 className="mt-4 text-2xl md:text-3xl font-medium tracking-tight">
+                  {t(`tiers.${tier.id}.name`)}
+                </h3>
 
-                  <ArrowRight
-                    className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-1"
-                    strokeWidth={1.5}
-                  />
-                </button>
-
+                <div className="mt-6">
+                  {Array.isArray(specs) && (
+                    <ul className="space-y-4">
+                      {specs.map((s, i) => (
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed"
+                        >
+                          <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                          <span>{s}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </div>
-            </motion.div>
-          </div>
+
+              <button
+                onClick={() => setOpen(true)}
+                className="inline-flex w-fit items-center gap-2 text-sm text-primary group/cta"
+              >
+                <span className="border-b border-primary/40 pb-0.5">
+                  {t(`tiers.${tier.id}.cta`)}
+                </span>
+
+                <ArrowRight
+                  className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-1"
+                  strokeWidth={1.5}
+                />
+              </button>
+
+            </div>
+          </motion.div>
 
         </div>
 
@@ -146,4 +148,3 @@ export default function TierShowcase({ tier }) {
     </Reveal>
   );
 }
-```

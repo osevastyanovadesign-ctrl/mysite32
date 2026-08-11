@@ -107,7 +107,7 @@ export default function Hero() {
                   duration: 0.5,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
+                className="absolute z-10 right-40 inset-y-0 my-auto w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
               >
                 {/* Close */}
                 <button

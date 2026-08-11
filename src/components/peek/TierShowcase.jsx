@@ -51,7 +51,7 @@ export default function TierShowcase({ tier }) {
       <div className="relative">
 
         {/* Full-width editorial stage */}
-        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden">
+        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden aspect-[4/3]">
 
           {/* Large calm editorial photograph */}
           <div className="relative w-full overflow-hidden bg-secondary/40">

@@ -16,7 +16,7 @@ export default function Hero() {
       id="top"
       className="relative min-h-screen w-full overflow-hidden bg-background flex items-center"
     >
-      <div className="mx-auto max-w-7xl w-full px-6 md:px-10 grid md:grid-cols-2 gap-10 md:gap-16 items-center pt-28 pb-28">
+      <div className="relative w-full">
         {/* The mug */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}

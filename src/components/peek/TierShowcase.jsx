@@ -78,8 +78,8 @@ export default function TierShowcase({ tier }) {
               absolute
               z-10
               right-6
-              top-1/2
-              -translate-y-1/2
+              inset-y-0
+              my-auto
               w-[72%]
               sm:w-[48%]
               md:w-[34%]

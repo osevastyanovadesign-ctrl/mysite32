@@ -92,7 +92,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[70] flex items-center justify-center p-0 md:p-10"
+              className="fixed inset-0 z-[70] flex items-center justify-end p-0 md:pr-10"
             >
               <div
                 className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"

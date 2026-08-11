@@ -33,7 +33,7 @@ export default function Hero() {
         </motion.div>
 
         {/* Headline */}
-        <div className="order-1 md:order-2">
+        <div className="absolute inset-0 flex items-center justify-end px-6 md:px-10 lg:px-16">
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}

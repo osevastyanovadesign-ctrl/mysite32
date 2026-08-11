@@ -92,7 +92,7 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[70] flex items-center justify-center p-0 md:p-6"
+              className="fixed inset-0 z-[70] flex items-center justify-end p-0 md:pr-10"
             >
               <div
                 className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
@@ -107,7 +107,7 @@ export default function Hero() {
                   duration: 0.5,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative z-10 w-full max-w-5xl md:h-[70vh] bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
+                className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
               >
                 {/* Close */}
                 <button

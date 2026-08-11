@@ -93,7 +93,7 @@ export default function CommissionDialog({ open, onClose, series }) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 40, opacity: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 w-full max-w-lg bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto"
+            className="relative z-10 w-full max-w-5xl bg-background rounded-t-[2rem] md:rounded-[2.5rem] overflow-hidden shadow-2xl max-h-[92vh] overflow-y-auto"
           >
             <button
               onClick={onClose}

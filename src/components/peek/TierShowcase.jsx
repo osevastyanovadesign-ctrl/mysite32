@@ -1,4 +1,3 @@
-```jsx
 import React, { useRef, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { Image } from "@/components/ui/image";
@@ -49,20 +48,20 @@ export default function TierShowcase({ tier }) {
 
   return (
     <Reveal>
+      <div className="relative">
 
-      {/* Full-width editorial stage */}
-      <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden">
-
-        {/* Photo + card positioning stage */}
-        <div className="relative w-full aspect-[4/3] overflow-hidden bg-secondary/40">
+        {/* Full-width editorial stage */}
+        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden">
 
           {/* Large calm editorial photograph */}
-          <Image
-            src={tier.image}
-            alt={tier.alt[lang]}
-            className="absolute inset-0 w-full h-full object-cover"
-            fittingType="fill"
-          />
+          <div className="relative w-full overflow-hidden bg-secondary/40">
+            <Image
+              src={tier.image}
+              alt={tier.alt[lang]}
+              className="w-full aspect-[4/3] object-cover"
+              fittingType="fill"
+            />
+          </div>
 
           {/* Vertical order card */}
           <motion.div
@@ -146,8 +145,6 @@ export default function TierShowcase({ tier }) {
         onClose={() => setOpen(false)}
         series={tier.id}
       />
-
     </Reveal>
   );
 }
-```

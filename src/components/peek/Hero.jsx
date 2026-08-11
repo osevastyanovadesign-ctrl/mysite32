@@ -61,7 +61,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.7 }}
-            className="absolute right-6 md:right-40 lg:right-10 top-1/2 -translate-y-1/2 w-[360px] text-left"
+            className="absolute right-6 md:right-10 lg:right-10 top-1/2 -translate-y-1/2 w-[320px] md:w-[400px] text-left"
           >
             <div className="bg-background/95 backdrop-blur-sm rounded-[2rem] p-7 md:p-8 shadow-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-primary mb-4">

@@ -137,11 +137,11 @@ export default function CommissionDialog({ open, onClose, series }) {
             </button>
 
             {/* Editorial image */}
-            <div className="relative h-[40vh] md:h-[70vh] overflow-hidden bg-secondary/40">
+            <div className="relative min-h-[40vh] md:min-h-[70vh] h-full overflow-hidden bg-secondary/40">
               <img
                 src={tier?.image}
                 alt=""
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
 

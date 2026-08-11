@@ -27,7 +27,7 @@ export default function Hero() {
           <Image
             src={HERO_MUG}
             alt="A white Peek ceramic mug with the Eva dachshund print"
-            className="w-full aspect-[4/5] object-cover squircle-lg shadow-2xl shadow-primary/10"
+            className="w-full aspect-[4/3] object-cover squircle-lg shadow-2xl shadow-primary/10"
             fittingType="fill"
           />
         </motion.div>

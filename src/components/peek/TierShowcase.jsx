@@ -77,7 +77,7 @@ export default function TierShowcase({ tier }) {
               group
               absolute
               z-10
-              right-6
+              right-20
               inset-y-0
               my-auto
               w-[72%]

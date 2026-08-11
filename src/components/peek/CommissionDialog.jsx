@@ -1,3 +1,4 @@
+```jsx
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, Check, Loader2 } from "lucide-react";
@@ -6,8 +7,6 @@ import { base44 } from "@/api/base44Client";
 import { TIERS } from "@/data/products";
 
 // Commission order dialog for the Pet Portrait and Mixed Media series.
-// Collects the owner's contact, the pet's name and a photo, then saves
-// the request as a CommissionRequest record.
 export default function CommissionDialog({ open, onClose, series }) {
   const { t } = useLang();
   const [form, setForm] = useState({
@@ -27,13 +26,11 @@ export default function CommissionDialog({ open, onClose, series }) {
     const onKey = (e) => e.key === "Escape" && onClose();
 
     window.addEventListener("keydown", onKey);
-
-    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow = "";
     };
   }, [open, onClose]);
 
@@ -136,8 +133,8 @@ export default function CommissionDialog({ open, onClose, series }) {
               <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
-            {/* Editorial image */}
-            <div className="relative min-h-[40vh] md:min-h-[70vh] h-full overflow-hidden bg-secondary/40">
+            {/* Image — same left column geometry as ProductModal */}
+            <div className="relative min-h-[40vh] md:min-h-[70vh] bg-secondary/40 overflow-hidden">
               <img
                 src={tier?.image}
                 alt=""
@@ -145,7 +142,7 @@ export default function CommissionDialog({ open, onClose, series }) {
               />
             </div>
 
-            {/* Commission form */}
+            {/* Form — same right column geometry as ProductModal */}
             <div className="p-8 md:p-12 flex flex-col justify-center">
               {status === "done" ? (
                 <div className="text-center py-10">
@@ -301,3 +298,4 @@ export default function CommissionDialog({ open, onClose, series }) {
     </AnimatePresence>
   );
 }
+```

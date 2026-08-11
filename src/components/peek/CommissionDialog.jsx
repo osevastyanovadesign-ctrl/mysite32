@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Upload, Check, Loader2 } from "lucide-react";
 import { useLang } from "./LanguageContext";
 import { base44 } from "@/api/base44Client";
+import { TIERS } from "@/data/products";
 
 // Commission order dialog for the Pet Portrait and Mixed Media series.
 // Collects the owner's contact, the pet's name and a photo, then saves
@@ -103,7 +104,7 @@ export default function CommissionDialog({ open, onClose, series }) {
               <X className="w-5 h-5" strokeWidth={1.5} />
             </button>
 
-            <div className="p-8 md:p-10">
+            <div className="grid md:grid-cols-2">
               {status === "done" ? (
                 <div className="text-center py-10">
                   <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-6">

@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { ArrowDown, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { HERO_MUG } from "@/data/products";
@@ -18,6 +24,30 @@ export default function Hero() {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
+  const rx = useMotionValue(0.5);
+const ry = useMotionValue(0.5);
+
+const rotateX = useSpring(
+  useTransform(ry, [0, 1], [8, -8]),
+  { stiffness: 120, damping: 14 }
+);
+
+const rotateY = useSpring(
+  useTransform(rx, [0, 1], [-10, 10]),
+  { stiffness: 120, damping: 14 }
+);
+
+const handleMove = (e) => {
+  const rect = e.currentTarget.getBoundingClientRect();
+
+  rx.set((e.clientX - rect.left) / rect.width);
+  ry.set((e.clientY - rect.top) / rect.height);
+};
+
+const reset = () => {
+  rx.set(0.5);
+  ry.set(0.5);
+};
 
   const next = () => {
     setCurrent((prev) => (prev + 1) % HERO_GALLERY.length);
@@ -55,13 +85,16 @@ export default function Hero() {
 
         {/* Small editorial card */}
           <motion.button
-            type="button"
-            onClick={() => setOpen(true)}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
-          >
+  type="button"
+  onClick={() => setOpen(true)}
+  onMouseMove={handleMove}
+  onMouseLeave={reset}
+  style={{ rotateX, rotateY, transformPerspective: 900 }}
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.8, delay: 0.7 }}
+  className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
+>
             <div className="relative overflow-hidden squircle bg-background/95 backdrop-blur-sm aspect-[3/4] p-7 md:p-8 shadow-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-primary mb-4">
                 PEEK

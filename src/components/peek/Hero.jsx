@@ -107,22 +107,23 @@ const reset = () => {
 >
             <div className="relative overflow-hidden squircle bg-background/95 backdrop-blur-sm aspect-[3/4] p-7 md:p-8 shadow-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-primary mb-4">
-                PEEK
-              </p>
+  {t("heroCard.eyebrow")}
+</p>
 
-              <h1 className="font-display text-3xl md:text-4xl leading-tight text-foreground">
-                Objects{" "}
-                <span className="italic text-primary">with a gaze</span>
-              </h1>
+<h1 className="font-display text-3xl md:text-4xl leading-tight text-foreground">
+  {t("heroCard.title")}{" "}
+  <span className="italic text-primary">
+    {t("heroCard.accent")}
+  </span>
+</h1>
 
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                A little story about the objects, animals and moments behind
-                PEEK.
-              </p>
+<p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+  {t("heroCard.description")}
+</p>
 
-              <div className="mt-6 text-sm font-medium text-foreground">
-                Discover PEEK →
-              </div>
+<div className="mt-6 text-sm font-medium text-foreground">
+  {t("heroCard.cta")}
+</div>
             </div>
           </motion.button>
 
@@ -219,7 +220,7 @@ const reset = () => {
                   </h2>
 
                   <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                    Designed to bring a little character into everyday life.
+                    {t("heroCard.body")}
                   </p>
 
                   <div className="mt-8 border-l-2 border-secondary pl-5">
@@ -228,7 +229,7 @@ const reset = () => {
                     </p>
 
                     <p className="font-display text-xl italic text-foreground">
-                      Every object has a story.
+                      {t("heroCard.story")}
                     </p>
                   </div>
                 </div>

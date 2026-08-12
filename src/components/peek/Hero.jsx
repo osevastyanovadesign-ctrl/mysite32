@@ -63,7 +63,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.7 }}
             className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
           >
-            <div className="bg-background/95 backdrop-blur-sm rounded-[2rem] p-7 md:p-8 shadow-2xl">
+            <div className="relative overflow-hidden squircle bg-background/95 backdrop-blur-sm aspect-[3/4] p-7 md:p-8 shadow-2xl">
               <p className="text-xs uppercase tracking-[0.3em] text-primary mb-4">
                 PEEK
               </p>

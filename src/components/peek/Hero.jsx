@@ -103,10 +103,10 @@ const reset = () => {
   transition={{ duration: 0.8, delay: 0.7 }}
   className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
 >
-  <div className="relative w-full h-full bg-white p-4 md:p-5 pb-7 md:pb-9 shadow-2xl">
+  <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-2xl">
     
     {/* Photo */}
-    <div className="relative w-full aspect-[4/3] overflow-hidden bg-secondary/20">
+    <div className="relative w-full aspect-[5/4] overflow-hidden bg-secondary/20">
       <AnimatePresence mode="wait">
         <motion.div
           key={current}

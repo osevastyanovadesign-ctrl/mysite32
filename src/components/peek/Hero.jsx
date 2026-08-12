@@ -54,7 +54,6 @@ export default function Hero() {
         </motion.div>
 
         {/* Small editorial card */}
-        {!open && (
           <motion.button
             type="button"
             onClick={() => setOpen(true)}
@@ -83,7 +82,6 @@ export default function Hero() {
               </div>
             </div>
           </motion.button>
-        )}
 
         {/* Expanded Hero gallery */}
         <AnimatePresence>

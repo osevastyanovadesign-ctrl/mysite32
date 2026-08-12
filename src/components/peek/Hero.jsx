@@ -118,7 +118,7 @@ export default function Hero() {
                 </button>
 
                 {/* Gallery image */}
-                className="relative h-[40vh] md:h-full overflow-hidden bg-secondary/40"
+                <div className="relative h-[40vh] md:h-full overflow-hidden bg-secondary/40">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={current}

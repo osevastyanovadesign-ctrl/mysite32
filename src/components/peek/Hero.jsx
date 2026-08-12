@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -24,6 +24,16 @@ export default function Hero() {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
+  useEffect(() => {
+  if (!open) return;
+
+  const previousOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+
+  return () => {
+    document.body.style.overflow = previousOverflow;
+  };
+}, [open]);
   const rx = useMotionValue(0.5);
 const ry = useMotionValue(0.5);
 

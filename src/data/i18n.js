@@ -22,6 +22,15 @@ export const translations = {
       cta: "See the collection",
       scroll: "Scroll",
     },
+    heroCard: {
+  eyebrow: "PEEK",
+  title: "Objects",
+  accent: "with a gaze",
+  description: "A little story about the objects, animals and moments behind PEEK.",
+  cta: "Discover PEEK →",
+  body: "Designed to bring a little character into everyday life.",
+  story: "Every object has a story.",
+},
     collection: {
       eyebrow: "The Collection",
       title: "Three series,",
@@ -131,6 +140,15 @@ export const translations = {
       cta: "Kollektion ansehen",
       scroll: "Scrollen",
     },
+    heroCard: {
+  eyebrow: "PEEK",
+  title: "Objekte",
+  accent: "mit einem Blick",
+  description: "Eine kleine Geschichte über die Objekte, Tiere und Momente hinter PEEK.",
+  cta: "PEEK entdecken →",
+  body: "Entworfen, um dem Alltag ein wenig Charakter zu verleihen.",
+  story: "Jedes Objekt hat eine Geschichte.",
+},
     collection: {
       eyebrow: "Die Kollektion",
       title: "Drei Serien,",
@@ -240,6 +258,15 @@ export const translations = {
       cta: "Pogledaj kolekciju",
       scroll: "Skroluj",
     },
+    heroCard: {
+  eyebrow: "PEEK",
+  title: "Predmeti",
+  accent: "sa pogledom",
+  description: "Mala priča o predmetima, životinjama i trenucima koji stoje iza brenda PEEK.",
+  cta: "Otkrij PEEK →",
+  body: "Dizajnirano da svakodnevnom životu doda malo karaktera.",
+  story: "Svaki predmet ima svoju priču.",
+},
     collection: {
       eyebrow: "Kolekcija",
       title: "Tri serije,",
@@ -349,6 +376,15 @@ export const translations = {
       cta: "Смотреть коллекцию",
       scroll: "Листать",
     },
+    heroCard: {
+  eyebrow: "PEEK",
+  title: "Предметы",
+  accent: "со взглядом",
+  description: "Небольшая история о предметах, животных и моментах, стоящих за PEEK.",
+  cta: "Открыть PEEK →",
+  body: "Создано, чтобы добавить немного характера в повседневную жизнь.",
+  story: "У каждого предмета есть своя история.",
+},
     collection: {
       eyebrow: "Коллекция",
       title: "Три серии,",

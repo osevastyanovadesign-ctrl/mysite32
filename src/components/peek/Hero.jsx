@@ -215,9 +215,11 @@ const reset = () => {
                   </p>
 
                   <h2 className="font-display text-4xl md:text-5xl leading-[1.05] text-foreground">
-                    Objects{" "}
-                    <span className="italic text-primary">with a gaze</span>
-                  </h2>
+                   {t("heroCard.title")}{" "}
+                   <span className="italic text-primary">
+                   {t("heroCard.accent")}
+                   </span>
+                    </h2>
 
                   <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
                     {t("heroCard.body")}

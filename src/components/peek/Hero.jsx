@@ -93,10 +93,8 @@ const reset = () => {
           />
         </motion.div>
 
-        {/* Small editorial card */}
-          <motion.button
-  type="button"
-  onClick={() => setOpen(true)}
+        {/* Polaroid editorial card */}
+<motion.div
   onMouseMove={handleMove}
   onMouseLeave={reset}
   style={{ rotateX, rotateY, transformPerspective: 900 }}
@@ -105,27 +103,65 @@ const reset = () => {
   transition={{ duration: 0.8, delay: 0.7 }}
   className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
 >
-            <div className="relative overflow-hidden squircle bg-background/95 backdrop-blur-sm aspect-[3/4] p-7 md:p-8 shadow-2xl">
-              <p className="text-xs uppercase tracking-[0.3em] text-primary mb-4">
-  {t("heroCard.eyebrow")}
-</p>
+  <div className="relative w-full h-full bg-white p-4 md:p-5 pb-7 md:pb-9 shadow-2xl">
+    
+    {/* Photo */}
+    <div className="relative w-full aspect-[4/3] overflow-hidden bg-secondary/20">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.45 }}
+          className="absolute inset-0"
+        >
+          <Image
+            src={HERO_GALLERY[current]}
+            alt={`PEEK editorial scene ${current + 1}`}
+            className="w-full h-full object-cover"
+            fittingType="fill"
+          />
+        </motion.div>
+      </AnimatePresence>
+    </div>
 
-<h1 className="font-display text-3xl md:text-4xl leading-tight text-foreground">
-  {t("heroCard.title")}{" "}
-  <span className="italic text-primary">
-    {t("heroCard.accent")}
-  </span>
-</h1>
+    {/* Caption */}
+    <div className="relative mt-4 md:mt-5 pr-14">
+      <p className="font-display text-base md:text-lg leading-snug text-foreground">
+        A little joy for every morning.
+      </p>
+    </div>
 
-<p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-  {t("heroCard.description")}
-</p>
+    {/* Arrows */}
+    <div className="absolute bottom-4 md:bottom-5 right-4 md:right-5 flex items-center gap-1">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          prev();
+        }}
+        className="w-8 h-8 flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors"
+        aria-label="Previous scene"
+      >
+        <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
+      </button>
 
-<div className="mt-6 text-sm font-medium text-foreground">
-  {t("heroCard.cta")}
-</div>
-            </div>
-          </motion.button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          next();
+        }}
+        className="w-8 h-8 flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors"
+        aria-label="Next scene"
+      >
+        <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
+      </button>
+    </div>
+
+  </div>
+</motion.div>
 
         {/* Expanded Hero gallery */}
         <AnimatePresence>

@@ -106,7 +106,7 @@ const reset = () => {
   <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-2xl">
     
     {/* Photo */}
-    <div className="relative w-full aspect-[5/4] overflow-hidden bg-secondary/20">
+    <div className="relative w-full h-[72%] overflow-hidden bg-secondary/20">
       <AnimatePresence mode="wait">
         <motion.div
           key={current}

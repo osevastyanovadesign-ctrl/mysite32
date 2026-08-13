@@ -20,6 +20,13 @@ const HERO_GALLERY = [
   HERO_MUG,
 ];
 
+const POLAROID_POSES = [
+  { rotate: -3, x: 0 },
+  { rotate: 4, x: -6 },
+  { rotate: -2, x: 5 },
+  { rotate: 5, x: -4 },
+];
+
 export default function Hero() {
   const { t } = useLang();
   const [open, setOpen] = useState(false);
@@ -97,7 +104,13 @@ const reset = () => {
 <motion.div
   onMouseMove={handleMove}
   onMouseLeave={reset}
-  style={{ rotateX, rotateY, transformPerspective: 900 }}
+  style={{
+  rotateX,
+  rotateY,
+  rotate: POLAROID_POSES[current].rotate,
+  x: POLAROID_POSES[current].x,
+  transformPerspective: 900,
+}}
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.8, delay: 0.7 }}

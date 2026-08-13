@@ -103,7 +103,7 @@ const reset = () => {
   transition={{ duration: 0.8, delay: 0.7 }}
   className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
 >
-  <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-2xl">
+  <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
     
     {/* Photo */}
     <div className="relative w-full h-[80%] overflow-hidden bg-secondary/20">

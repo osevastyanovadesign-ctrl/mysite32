@@ -104,21 +104,33 @@ const reset = () => {
 
         {/* Polaroid editorial card */}
 <motion.div
-  onMouseMove={handleMove}
-  onMouseLeave={reset}
-  style={{
-  rotateX,
-  rotateY,
-  rotate: POLAROID_POSES[current].rotate,
-  x: POLAROID_POSES[current].x,
-  transformPerspective: 900,
-}}
+  onClick={() => next()}
   initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.8, delay: 0.7 }}
-  className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left"
+  animate={{
+    opacity: 1,
+    x: POLAROID_POSES[current].x,
+    y: POLAROID_POSES[current].y,
+    rotate: POLAROID_POSES[current].rotate,
+    scale: POLAROID_POSES[current].scale,
+  }}
+  transition={{
+    duration: 0.65,
+    ease: [0.22, 1, 0.36, 1],
+  }}
+  className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left cursor-pointer"
 >
-  <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+  <motion.div
+    onMouseMove={handleMove}
+    onMouseLeave={reset}
+    style={{
+      rotateX,
+      rotateY,
+      transformPerspective: 900,
+    }}
+    className="w-full h-full"
+  >
+
+    <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
     
     {/* Photo */}
     <div className="relative w-full h-[80%] overflow-hidden bg-secondary/20">
@@ -148,7 +160,7 @@ const reset = () => {
       </p>
     </div>
 
-    {/* Arrows */}
+        {/* Arrows */}
     <div className="absolute bottom-4 md:bottom-5 right-4 md:right-5 flex items-center gap-1">
       <button
         type="button"
@@ -176,6 +188,7 @@ const reset = () => {
     </div>
 
   </div>
+  </motion.div>
 </motion.div>
 
         {/* Expanded Hero gallery */}

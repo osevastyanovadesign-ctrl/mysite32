@@ -21,10 +21,10 @@ const HERO_GALLERY = [
 ];
 
 const POLAROID_POSES = [
-  { rotate: -3, x: 0 },
-  { rotate: 4, x: -6 },
-  { rotate: -2, x: 5 },
-  { rotate: 5, x: -4 },
+  { rotate: 4, x: 0 },
+  { rotate: -5, x: -8 },
+  { rotate: 2, x: 6 },
+  { rotate: -4, x: -5 },
 ];
 
 export default function Hero() {

@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import {
   motion,
   AnimatePresence,
@@ -6,12 +11,14 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+
 import {
   ArrowDown,
   ChevronLeft,
   ChevronRight,
   X,
 } from "lucide-react";
+
 import { Image } from "@/components/ui/image";
 import { HERO_MUG } from "@/data/products";
 import { useLang } from "./LanguageContext";
@@ -79,23 +86,53 @@ export default function Hero() {
 
   const [open, setOpen] = useState(false);
 
-  // Photos from bottom → top.
-  const [stack, setStack] = useState([0]);
+  // ------------------------------------------------------------
+  // PHYSICAL STACK
+  //
+  // Each object represents one real Polaroid card.
+  //
+  // id        = physical identity of the card
+  // photoIndex = image currently displayed on that card
+  //
+  // The array is ordered:
+  // bottom → top
+  // ------------------------------------------------------------
+
+  const [stack, setStack] = useState([
+    {
+      id: 1,
+      photoIndex: 0,
+    },
+  ]);
+
+  const nextCardId = useRef(2);
 
   const [current, setCurrent] = useState(0);
 
-  // Used to give a special animation to a card
-  // that has been pulled from somewhere inside the stack.
+  // Card currently being physically lifted
+  // from inside the stack.
   const [liftingCard, setLiftingCard] = useState(null);
+
+  // Card currently being removed from the top.
+  const [removingCard, setRemovingCard] =
+    useState(null);
+
+  // Prevent multiple clicks while a physical
+  // movement is taking place.
+  const [stackAnimating, setStackAnimating] =
+    useState(false);
 
   useEffect(() => {
     if (!open) return;
 
-    const previousOverflow = document.body.style.overflow;
+    const previousOverflow =
+      document.body.style.overflow;
+
     document.body.style.overflow = "hidden";
 
     return () => {
-      document.body.style.overflow = previousOverflow;
+      document.body.style.overflow =
+        previousOverflow;
     };
   }, [open]);
 
@@ -123,10 +160,16 @@ export default function Hero() {
   );
 
   const handleMove = (e) => {
-    const rect = e.currentTarget.getBoundingClientRect();
+    const rect =
+      e.currentTarget.getBoundingClientRect();
 
-    rx.set((e.clientX - rect.left) / rect.width);
-    ry.set((e.clientY - rect.top) / rect.height);
+    rx.set(
+      (e.clientX - rect.left) / rect.width
+    );
+
+    ry.set(
+      (e.clientY - rect.top) / rect.height
+    );
   };
 
   const reset = () => {
@@ -135,103 +178,199 @@ export default function Hero() {
   };
 
   // ------------------------------------------------------------
-  // Stack
+  // Stack helpers
   // ------------------------------------------------------------
 
-  const topCard = stack[stack.length - 1];
+  const topCard =
+    stack[stack.length - 1];
 
-  const addNextCard = () => {
-    setLiftingCard(null);
+  const createCard = (photoIndex) => {
+    const card = {
+      id: nextCardId.current,
+      photoIndex,
+    };
 
-    setStack((prev) => {
-      const last = prev[prev.length - 1];
+    nextCardId.current += 1;
 
-      const nextIndex =
-        (last + 1) % HERO_GALLERY.length;
-
-      // First build the physical stack.
-      if (prev.length < MAX_STACK) {
-        setCurrent(nextIndex);
-
-        return [...prev, nextIndex];
-      }
-
-      // Stack is full.
-      // Remove the top card and place the next photo on top.
-      const withoutTop = prev.slice(0, -1);
-
-      setCurrent(nextIndex);
-
-      return [...withoutTop, nextIndex];
-    });
+    return card;
   };
 
-  const bringToTop = (photoIndex) => {
-    if (photoIndex === topCard) {
+  // ------------------------------------------------------------
+  // NEXT
+  //
+  // The current top card physically leaves the stack.
+  // A completely new physical card is then placed on top.
+  // ------------------------------------------------------------
+
+  const next = () => {
+    if (stackAnimating || !topCard) {
       return;
     }
 
-    setLiftingCard(photoIndex);
+    setStackAnimating(true);
 
-    // First allow the selected card to visually
-    // leave the stack.
+    setRemovingCard(topCard.id);
+
+    const nextPhotoIndex =
+      (topCard.photoIndex + 1) %
+      HERO_GALLERY.length;
+
+    setCurrent(nextPhotoIndex);
+
+    // Let the current top card physically
+    // travel away before changing the stack.
     setTimeout(() => {
       setStack((prev) => {
-        const withoutSelected = prev.filter(
-          (item) => item !== photoIndex
-        );
+        const withoutTop =
+          prev.slice(0, -1);
+
+        // Keep the stack growing until MAX_STACK.
+        // After that, keep exactly MAX_STACK cards.
+        const newCard =
+          createCard(nextPhotoIndex);
 
         const nextStack = [
-          ...withoutSelected,
-          photoIndex,
+          ...withoutTop,
+          newCard,
         ];
 
-        setCurrent(photoIndex);
+        return nextStack.slice(-MAX_STACK);
+      });
 
-        return nextStack;
+      setRemovingCard(null);
+
+      // Give the new top card enough time
+      // to fall into its position.
+      setTimeout(() => {
+        setStackAnimating(false);
+      }, 500);
+    }, 420);
+  };
+
+  // ------------------------------------------------------------
+  // BRING CARD TO TOP
+  //
+  // A lower card first physically leaves its own
+  // position, passes above the entire stack,
+  // then becomes the top card.
+  // ------------------------------------------------------------
+
+  const bringToTop = (cardId) => {
+    if (stackAnimating) {
+      return;
+    }
+
+    const selected =
+      stack.find(
+        (card) => card.id === cardId
+      );
+
+    if (!selected) {
+      return;
+    }
+
+    if (
+      topCard &&
+      selected.id === topCard.id
+    ) {
+      return;
+    }
+
+    setStackAnimating(true);
+
+    setLiftingCard(cardId);
+
+    setCurrent(selected.photoIndex);
+
+    // Phase 1:
+    // card visually leaves its position.
+    setTimeout(() => {
+      setStack((prev) => {
+        const withoutSelected =
+          prev.filter(
+            (card) =>
+              card.id !== cardId
+          );
+
+        return [
+          ...withoutSelected,
+          selected,
+        ];
       });
 
       setLiftingCard(null);
-    }, 180);
+
+      // Phase 2:
+      // allow the card to settle into the
+      // normal top position.
+      setTimeout(() => {
+        setStackAnimating(false);
+      }, 500);
+    }, 420);
   };
 
-  const next = () => {
-    addNextCard();
-  };
+  // ------------------------------------------------------------
+  // PREVIOUS
+  //
+  // Kept as a physical reorder inside the stack.
+  // ------------------------------------------------------------
 
   const prev = () => {
-    setLiftingCard(null);
+    if (
+      stackAnimating ||
+      stack.length <= 1
+    ) {
+      return;
+    }
 
-    setStack((prev) => {
-      if (prev.length <= 1) {
-        return prev;
-      }
+    setStackAnimating(true);
 
-      const oldTop = prev[prev.length - 1];
-      const newTop = prev[prev.length - 2];
+    setStack((prevStack) => {
+      const oldTop =
+        prevStack[
+          prevStack.length - 1
+        ];
+
+      const newTop =
+        prevStack[
+          prevStack.length - 2
+        ];
 
       const reordered = [
-        ...prev.slice(0, -2),
+        ...prevStack.slice(0, -2),
         oldTop,
         newTop,
       ];
 
-      setCurrent(newTop);
+      setCurrent(newTop.photoIndex);
 
       return reordered;
     });
+
+    setTimeout(() => {
+      setStackAnimating(false);
+    }, 550);
   };
 
   // ------------------------------------------------------------
-  // Render
+  // RENDER
   // ------------------------------------------------------------
 
   return (
     <section
       id="top"
-      className="relative min-h-screen w-full overflow-hidden bg-background"
+      className="
+        relative
+        min-h-screen
+        w-full
+        overflow-hidden
+        bg-background
+      "
     >
-      {/* Hero photograph */}
+      {/* =====================================================
+          HERO PHOTOGRAPH
+      ====================================================== */}
+
       <div className="relative w-full">
         <motion.div
           initial={{
@@ -251,7 +390,14 @@ export default function Hero() {
           <Image
             src={HERO_MUG}
             alt="A white Peek ceramic mug with the Eva dachshund print"
-            className="w-full aspect-[4/3] object-cover squircle-lg shadow-2xl shadow-primary/10"
+            className="
+              w-full
+              aspect-[4/3]
+              object-cover
+              squircle-lg
+              shadow-2xl
+              shadow-primary/10
+            "
             fittingType="fill"
           />
         </motion.div>
@@ -272,216 +418,328 @@ export default function Hero() {
           "
         >
           <AnimatePresence initial={false}>
-            {stack.map((photoIndex, stackIndex) => {
-              const pose =
-                STACK_POSES[
-                  Math.min(
-                    stackIndex,
-                    STACK_POSES.length - 1
-                  )
-                ];
+            {stack.map(
+              (card, stackIndex) => {
+                const photoIndex =
+                  card.photoIndex;
 
-              const isTop =
-                stackIndex === stack.length - 1;
+                const pose =
+                  STACK_POSES[
+                    Math.min(
+                      stackIndex,
+                      STACK_POSES.length - 1
+                    )
+                  ];
 
-              const isLifting =
-                liftingCard === photoIndex;
+                const isTop =
+                  stackIndex ===
+                  stack.length - 1;
 
-              return (
-                <motion.div
-                  key={photoIndex}
-                  initial={{
-                    opacity: 0,
-                    x: 45,
-                    y: -100,
-                    rotate: pose.rotate + 10,
-                    scale: 0.92,
-                  }}
-                  animate={
-                    isLifting
-                      ? {
-                          opacity: 1,
-                          x: 70,
-                          y: -115,
-                          rotate: pose.rotate + 12,
-                          scale: 1.015,
-                          zIndex: 50,
-                        }
-                      : {
-                          opacity: 1,
-                          x: pose.x,
-                          y: pose.y,
-                          rotate: pose.rotate,
-                          scale: pose.scale,
-                          zIndex: stackIndex + 1,
-                        }
-                  }
-                  exit={{
-                    opacity: 0,
-                    x: 100,
-                    y: -130,
-                    rotate: pose.rotate + 15,
-                    scale: 0.9,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 180,
-                    damping: 20,
-                    mass: 0.75,
-                  }}
-                  style={{
-                    transformOrigin: pose.origin,
-                  }}
-                  onClick={() => {
-                    if (isTop) {
-                      next();
-                    } else {
-                      bringToTop(photoIndex);
-                    }
-                  }}
-                  className="
-                    absolute
-                    inset-0
-                    text-left
-                    cursor-pointer
-                  "
-                >
+                const isLifting =
+                  liftingCard ===
+                  card.id;
+
+                const isRemoving =
+                  removingCard ===
+                  card.id;
+
+                return (
                   <motion.div
-                    onMouseMove={
-                      isTop
-                        ? handleMove
-                        : undefined
-                    }
-                    onMouseLeave={
-                      isTop
-                        ? reset
-                        : undefined
-                    }
-                    style={
-                      isTop && !isLifting
+                    key={card.id}
+                    initial={{
+                      opacity: 0,
+                      x: 45,
+                      y: -100,
+                      rotate:
+                        pose.rotate + 10,
+                      scale: 0.92,
+                    }}
+                    animate={
+                      isRemoving
                         ? {
-                            rotateX,
-                            rotateY,
-                            transformPerspective: 900,
+                            opacity: 0,
+                            x: 180,
+                            y: -160,
+                            rotate:
+                              pose.rotate +
+                              18,
+                            scale: 1.02,
+                            zIndex: 100,
+                          }
+                        : isLifting
+                        ? {
+                            opacity: 1,
+                            x: 55,
+                            y: -115,
+                            rotate:
+                              pose.rotate +
+                              10,
+                            scale: 1.025,
+                            zIndex: 100,
                           }
                         : {
-                            transformPerspective: 900,
+                            opacity: 1,
+                            x: pose.x,
+                            y: pose.y,
+                            rotate:
+                              pose.rotate,
+                            scale:
+                              pose.scale,
+                            zIndex:
+                              stackIndex + 1,
                           }
                     }
-                    className="w-full h-full"
+                    exit={{
+                      opacity: 0,
+                      x: 180,
+                      y: -160,
+                      rotate:
+                        pose.rotate + 18,
+                      scale: 0.9,
+                    }}
+                    transition={
+                      isRemoving
+                        ? {
+                            duration: 0.42,
+                            ease: [
+                              0.22,
+                              1,
+                              0.36,
+                              1,
+                            ],
+                          }
+                        : {
+                            type: "spring",
+                            stiffness: 170,
+                            damping: 20,
+                            mass: 0.8,
+                          }
+                    }
+                    style={{
+                      transformOrigin:
+                        pose.origin,
+                    }}
+                    onClick={() => {
+                      if (
+                        stackAnimating
+                      ) {
+                        return;
+                      }
+
+                      if (isTop) {
+                        next();
+                      } else {
+                        bringToTop(
+                          card.id
+                        );
+                      }
+                    }}
+                    className="
+                      absolute
+                      inset-0
+                      text-left
+                      cursor-pointer
+                    "
                   >
-                    <div
+                    <motion.div
+                      onMouseMove={
+                        isTop &&
+                        !isLifting &&
+                        !isRemoving
+                          ? handleMove
+                          : undefined
+                      }
+                      onMouseLeave={
+                        isTop &&
+                        !isLifting &&
+                        !isRemoving
+                          ? reset
+                          : undefined
+                      }
+                      style={
+                        isTop &&
+                        !isLifting &&
+                        !isRemoving
+                          ? {
+                              rotateX,
+                              rotateY,
+                              transformPerspective: 900,
+                            }
+                          : {
+                              transformPerspective: 900,
+                            }
+                      }
                       className="
-                        relative
                         w-full
                         h-full
-                        bg-white
-                        p-3
-                        md:p-4
-                        pb-7
-                        md:pb-9
-                        shadow-[0_12px_30px_rgba(0,0,0,0.16)]
                       "
                     >
-                      {/* Photo */}
                       <div
                         className="
                           relative
                           w-full
-                          h-[80%]
-                          overflow-hidden
-                          bg-secondary/20
+                          h-full
+                          bg-white
+                          p-3
+                          md:p-4
+                          pb-7
+                          md:pb-9
+                          shadow-[0_12px_30px_rgba(0,0,0,0.16)]
                         "
                       >
-                        <Image
-                          src={
-                            HERO_GALLERY[
-                              photoIndex
-                            ]
-                          }
-                          alt={`PEEK editorial scene ${
-                            photoIndex + 1
-                          }`}
-                          className="w-full h-full object-cover"
-                          fittingType="fill"
-                        />
-                      </div>
+                        {/* Photo */}
 
-                      {/* Caption */}
-                      <div className="relative mt-4 md:mt-5 pr-14">
-                        <p className="font-display text-base md:text-lg leading-snug text-foreground">
-                          A little joy for every morning.
-                        </p>
-                      </div>
-
-                      {/* Arrows only on top */}
-                      {isTop && (
                         <div
                           className="
-                            absolute
-                            bottom-4
-                            md:bottom-5
-                            right-4
-                            md:right-5
-                            flex
-                            items-center
-                            gap-1
+                            relative
+                            w-full
+                            h-[80%]
+                            overflow-hidden
+                            bg-secondary/20
                           "
                         >
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              prev();
-                            }}
+                          <Image
+                            src={
+                              HERO_GALLERY[
+                                photoIndex
+                              ]
+                            }
+                            alt={`PEEK editorial scene ${
+                              photoIndex + 1
+                            }`}
                             className="
-                              w-8
-                              h-8
-                              flex
-                              items-center
-                              justify-center
-                              text-foreground/60
-                              hover:text-foreground
-                              transition-colors
+                              w-full
+                              h-full
+                              object-cover
                             "
-                            aria-label="Previous scene"
-                          >
-                            <ChevronLeft
-                              className="w-4 h-4"
-                              strokeWidth={1.5}
-                            />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              next();
-                            }}
-                            className="
-                              w-8
-                              h-8
-                              flex
-                              items-center
-                              justify-center
-                              text-foreground/60
-                              hover:text-foreground
-                              transition-colors
-                            "
-                            aria-label="Next scene"
-                          >
-                            <ChevronRight
-                              className="w-4 h-4"
-                              strokeWidth={1.5}
-                            />
-                          </button>
+                            fittingType="fill"
+                          />
                         </div>
-                      )}
-                    </div>
+
+                        {/* Caption */}
+
+                        <div
+                          className="
+                            relative
+                            mt-4
+                            md:mt-5
+                            pr-14
+                          "
+                        >
+                          <p
+                            className="
+                              font-display
+                              text-base
+                              md:text-lg
+                              leading-snug
+                              text-foreground
+                            "
+                          >
+                            A little joy
+                            for every
+                            morning.
+                          </p>
+                        </div>
+
+                        {/* Arrows only on top */}
+
+                        {isTop &&
+                          !isRemoving && (
+                            <div
+                              className="
+                                absolute
+                                bottom-4
+                                md:bottom-5
+                                right-4
+                                md:right-5
+                                flex
+                                items-center
+                                gap-1
+                              "
+                            >
+                              <button
+                                type="button"
+                                onClick={(
+                                  e
+                                ) => {
+                                  e.stopPropagation();
+
+                                  if (
+                                    stackAnimating
+                                  ) {
+                                    return;
+                                  }
+
+                                  prev();
+                                }}
+                                className="
+                                  w-8
+                                  h-8
+                                  flex
+                                  items-center
+                                  justify-center
+                                  text-foreground/60
+                                  hover:text-foreground
+                                  transition-colors
+                                "
+                                aria-label="Previous scene"
+                              >
+                                <ChevronLeft
+                                  className="
+                                    w-4
+                                    h-4
+                                  "
+                                  strokeWidth={
+                                    1.5
+                                  }
+                                />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={(
+                                  e
+                                ) => {
+                                  e.stopPropagation();
+
+                                  if (
+                                    stackAnimating
+                                  ) {
+                                    return;
+                                  }
+
+                                  next();
+                                }}
+                                className="
+                                  w-8
+                                  h-8
+                                  flex
+                                  items-center
+                                  justify-center
+                                  text-foreground/60
+                                  hover:text-foreground
+                                  transition-colors
+                                "
+                                aria-label="Next scene"
+                              >
+                                <ChevronRight
+                                  className="
+                                    w-4
+                                    h-4
+                                  "
+                                  strokeWidth={
+                                    1.5
+                                  }
+                                />
+                              </button>
+                            </div>
+                          )}
+                      </div>
+                    </motion.div>
                   </motion.div>
-                </motion.div>
-              );
-            })}
+                );
+              }
+            )}
           </AnimatePresence>
         </div>
 
@@ -492,9 +750,15 @@ export default function Hero() {
         <AnimatePresence>
           {open && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{
+                opacity: 0,
+              }}
+              animate={{
+                opacity: 1,
+              }}
+              exit={{
+                opacity: 0,
+              }}
               className="
                 fixed
                 inset-0
@@ -514,7 +778,9 @@ export default function Hero() {
                   bg-foreground/40
                   backdrop-blur-sm
                 "
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
               />
 
               <motion.div
@@ -532,7 +798,12 @@ export default function Hero() {
                 }}
                 transition={{
                   duration: 0.5,
-                  ease: [0.22, 1, 0.36, 1],
+                  ease: [
+                    0.22,
+                    1,
+                    0.36,
+                    1,
+                  ],
                 }}
                 className="
                   relative
@@ -549,9 +820,12 @@ export default function Hero() {
                 "
               >
                 {/* Close */}
+
                 <button
                   type="button"
-                  onClick={() => setOpen(false)}
+                  onClick={() =>
+                    setOpen(false)
+                  }
                   className="
                     absolute
                     top-4
@@ -572,13 +846,25 @@ export default function Hero() {
                   aria-label="Close"
                 >
                   <X
-                    className="w-5 h-5"
+                    className="
+                      w-5
+                      h-5
+                    "
                     strokeWidth={1.5}
                   />
                 </button>
 
                 {/* Gallery image */}
-                <div className="relative h-[40vh] md:h-full overflow-hidden bg-secondary/40">
+
+                <div
+                  className="
+                    relative
+                    h-[40vh]
+                    md:h-full
+                    overflow-hidden
+                    bg-secondary/40
+                  "
+                >
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={current}
@@ -594,7 +880,10 @@ export default function Hero() {
                       transition={{
                         duration: 0.35,
                       }}
-                      className="absolute inset-0"
+                      className="
+                        absolute
+                        inset-0
+                      "
                     >
                       <Image
                         src={
@@ -605,14 +894,29 @@ export default function Hero() {
                         alt={`PEEK editorial image ${
                           current + 1
                         }`}
-                        className="w-full h-full object-cover"
+                        className="
+                          w-full
+                          h-full
+                          object-cover
+                        "
                         fittingType="fill"
                       />
                     </motion.div>
                   </AnimatePresence>
 
                   {/* Gallery controls */}
-                  <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between">
+
+                  <div
+                    className="
+                      absolute
+                      bottom-5
+                      left-5
+                      right-5
+                      flex
+                      items-center
+                      justify-between
+                    "
+                  >
                     <button
                       type="button"
                       onClick={prev}
@@ -632,7 +936,10 @@ export default function Hero() {
                       aria-label="Previous image"
                     >
                       <ChevronLeft
-                        className="w-5 h-5"
+                        className="
+                          w-5
+                          h-5
+                        "
                         strokeWidth={1.5}
                       />
                     </button>
@@ -677,7 +984,10 @@ export default function Hero() {
                       aria-label="Next image"
                     >
                       <ChevronRight
-                        className="w-5 h-5"
+                        className="
+                          w-5
+                          h-5
+                        "
                         strokeWidth={1.5}
                       />
                     </button>
@@ -685,31 +995,96 @@ export default function Hero() {
                 </div>
 
                 {/* Editorial text */}
-                <div className="p-8 md:p-12 flex flex-col justify-center">
-                  <p className="text-sm uppercase tracking-[0.3em] text-primary mb-4">
+
+                <div
+                  className="
+                    p-8
+                    md:p-12
+                    flex
+                    flex-col
+                    justify-center
+                  "
+                >
+                  <p
+                    className="
+                      text-sm
+                      uppercase
+                      tracking-[0.3em]
+                      text-primary
+                      mb-4
+                    "
+                  >
                     PEEK
                   </p>
 
-                  <h2 className="font-display text-4xl md:text-5xl leading-[1.05] text-foreground">
+                  <h2
+                    className="
+                      font-display
+                      text-4xl
+                      md:text-5xl
+                      leading-[1.05]
+                      text-foreground
+                    "
+                  >
                     {t("heroCard.title")}{" "}
-                    <span className="italic text-primary">
-                      {t("heroCard.accent")}
+                    <span
+                      className="
+                        italic
+                        text-primary
+                      "
+                    >
+                      {t(
+                        "heroCard.accent"
+                      )}
                     </span>
                   </h2>
 
-                  <p className="mt-6 text-muted-foreground leading-relaxed text-lg">
-                    {t("heroCard.body")}
+                  <p
+                    className="
+                      mt-6
+                      text-muted-foreground
+                      leading-relaxed
+                      text-lg
+                    "
+                  >
+                    {t(
+                      "heroCard.body"
+                    )}
                   </p>
 
-                  <div className="mt-8 border-l-2 border-secondary pl-5">
-                    <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">
+                  <div
+                    className="
+                      mt-8
+                      border-l-2
+                      border-secondary
+                      pl-5
+                    "
+                  >
+                    <p
+                      className="
+                        text-sm
+                        uppercase
+                        tracking-[0.2em]
+                        text-muted-foreground
+                        mb-2
+                      "
+                    >
                       {String(
                         current + 1
                       ).padStart(2, "0")}
                     </p>
 
-                    <p className="font-display text-xl italic text-foreground">
-                      {t("heroCard.story")}
+                    <p
+                      className="
+                        font-display
+                        text-xl
+                        italic
+                        text-foreground
+                      "
+                    >
+                      {t(
+                        "heroCard.story"
+                      )}
                     </p>
                   </div>
                 </div>
@@ -719,10 +1094,17 @@ export default function Hero() {
         </AnimatePresence>
       </div>
 
-      {/* Scroll indicator */}
+      {/* =====================================================
+          SCROLL INDICATOR
+      ====================================================== */}
+
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+        initial={{
+          opacity: 0,
+        }}
+        animate={{
+          opacity: 1,
+        }}
         transition={{
           delay: 1.3,
           duration: 1,
@@ -739,12 +1121,22 @@ export default function Hero() {
           text-muted-foreground
         "
       >
-        <span className="text-xs uppercase tracking-[0.25em]">
+        <span
+          className="
+            text-xs
+            uppercase
+            tracking-[0.25em]
+          "
+        >
           {t("hero.scroll")}
         </span>
 
         <ArrowDown
-          className="w-4 h-4 animate-bounce"
+          className="
+            w-4
+            h-4
+            animate-bounce
+          "
           strokeWidth={1.5}
         />
       </motion.div>

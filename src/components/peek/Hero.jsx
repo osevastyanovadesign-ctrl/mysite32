@@ -18,56 +18,67 @@ const HERO_GALLERY = [
   HERO_MUG,
   HERO_MUG,
   HERO_MUG,
+  HERO_MUG,
+  HERO_MUG,
 ];
 
-const POLAROID_POSES = [
+// Position of each card inside the physical stack.
+// The last card is the top card.
+const STACK_POSES = [
   {
-    rotate: 5,
+    rotate: 4,
     x: 0,
-    y: -18,
-    scale: 1,
+    y: 8,
+    scale: 0.975,
     origin: "bottom left",
   },
   {
-    rotate: -7,
-    x: -12,
-    y: 14,
-    scale: 0.99,
+    rotate: -6,
+    x: -9,
+    y: 3,
+    scale: 0.98,
     origin: "top right",
   },
   {
-    rotate: 4,
-    x: 10,
-    y: -8,
-    scale: 1.01,
+    rotate: 3,
+    x: 7,
+    y: -2,
+    scale: 0.985,
     origin: "bottom right",
   },
   {
     rotate: -5,
-    x: -8,
-    y: 20,
+    x: -5,
+    y: 5,
     scale: 0.99,
     origin: "top left",
   },
   {
     rotate: 7,
-    x: 6,
-    y: -14,
-    scale: 1,
+    x: 5,
+    y: -4,
+    scale: 0.995,
     origin: "bottom left",
   },
   {
-    rotate: -4,
-    x: -10,
-    y: 10,
-    scale: 1.01,
-    origin: "top right",
+    rotate: -2,
+    x: 0,
+    y: 0,
+    scale: 1,
+    origin: "center center",
   },
 ];
 
+const MAX_STACK = 6;
+
 export default function Hero() {
   const { t } = useLang();
+
   const [open, setOpen] = useState(false);
+
+  // Order of photos from bottom → top.
+  const [stack, setStack] = useState([0]);
+
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
@@ -81,16 +92,20 @@ export default function Hero() {
     };
   }, [open]);
 
+  // ------------------------------------------------------------
+  // Tilt
+  // ------------------------------------------------------------
+
   const rx = useMotionValue(0.5);
   const ry = useMotionValue(0.5);
 
   const rotateX = useSpring(
-    useTransform(ry, [0, 1], [8, -8]),
+    useTransform(ry, [0, 1], [7, -7]),
     { stiffness: 120, damping: 14 }
   );
 
   const rotateY = useSpring(
-    useTransform(rx, [0, 1], [-10, 10]),
+    useTransform(rx, [0, 1], [-9, 9]),
     { stiffness: 120, damping: 14 }
   );
 
@@ -106,15 +121,74 @@ export default function Hero() {
     ry.set(0.5);
   };
 
+  // ------------------------------------------------------------
+  // Stack logic
+  // ------------------------------------------------------------
+
+  const topCard = stack[stack.length - 1];
+
+  const addNextCard = () => {
+    setStack((prev) => {
+      const nextIndex = (prev[prev.length - 1] + 1) % HERO_GALLERY.length;
+
+      let nextStack;
+
+      if (prev.length < MAX_STACK) {
+        nextStack = [...prev, nextIndex];
+      } else {
+        // The stack is full:
+        // the bottom card goes away and a new one falls on top.
+        nextStack = [...prev.slice(1), nextIndex];
+      }
+
+      setCurrent(nextIndex);
+
+      return nextStack;
+    });
+  };
+
+  const bringToTop = (index) => {
+    setStack((prev) => {
+      if (prev[prev.length - 1] === index) {
+        return prev;
+      }
+
+      const withoutClicked = prev.filter((item) => item !== index);
+      const nextStack = [...withoutClicked, index];
+
+      setCurrent(index);
+
+      return nextStack;
+    });
+  };
+
   const next = () => {
-    setCurrent((prev) => (prev + 1) % HERO_GALLERY.length);
+    addNextCard();
   };
 
   const prev = () => {
-    setCurrent(
-      (prev) => (prev - 1 + HERO_GALLERY.length) % HERO_GALLERY.length
-    );
+    setStack((prev) => {
+      if (prev.length <= 1) {
+        return prev;
+      }
+
+      const newTop = prev[prev.length - 2];
+
+      const nextStack = [
+        ...prev.slice(0, prev.length - 2),
+        prev[prev.length - 1],
+        newTop,
+      ];
+
+      setCurrent(newTop);
+
+      return nextStack;
+    });
   };
+
+  // ------------------------------------------------------------
+  // Render
+  // ------------------------------------------------------------
 
   return (
     <section
@@ -140,108 +214,217 @@ export default function Hero() {
           />
         </motion.div>
 
-        {/* Polaroid editorial card */}
-        <motion.div
-          onClick={() => next()}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{
-            opacity: 1,
-            x: POLAROID_POSES[current].x,
-            y: POLAROID_POSES[current].y,
-            rotate: POLAROID_POSES[current].rotate,
-            scale: POLAROID_POSES[current].scale,
-          }}
-          transition={{
-            duration: 0.75,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-          style={{
-            transformOrigin: POLAROID_POSES[current].origin,
-          }}
-          className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left cursor-pointer"
+        {/* =====================================================
+            POLAROID STACK
+        ====================================================== */}
+
+        <div
+          className="
+            absolute
+            right-40
+            inset-y-0
+            my-auto
+            w-[320px]
+            md:w-[400px]
+            aspect-[3/4]
+          "
         >
-          <motion.div
-            onMouseMove={handleMove}
-            onMouseLeave={reset}
-            style={{
-              rotateX,
-              rotateY,
-              transformPerspective: 900,
-            }}
-            className="w-full h-full"
-          >
-            <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
+          <AnimatePresence initial={false}>
+            {stack.map((photoIndex, stackIndex) => {
+              const pose =
+                STACK_POSES[
+                  Math.min(stackIndex, STACK_POSES.length - 1)
+                ];
 
-              {/* Photo */}
-              <div className="relative w-full h-[80%] overflow-hidden bg-secondary/20">
-                <AnimatePresence mode="wait">
+              const isTop = stackIndex === stack.length - 1;
+
+              return (
+                <motion.div
+                  key={`${photoIndex}-${stackIndex}`}
+                  initial={{
+                    opacity: 0,
+                    x: 35,
+                    y: -80,
+                    rotate: pose.rotate + 8,
+                    scale: 0.94,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    x: pose.x,
+                    y: pose.y,
+                    rotate: pose.rotate,
+                    scale: pose.scale,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    x: 80,
+                    y: -70,
+                    rotate: pose.rotate + 10,
+                    scale: 0.9,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 170,
+                    damping: 18,
+                    mass: 0.8,
+                  }}
+                  style={{
+                    zIndex: stackIndex + 1,
+                    transformOrigin: pose.origin,
+                  }}
+                  onClick={() => {
+                    if (isTop) {
+                      next();
+                    } else {
+                      bringToTop(photoIndex);
+                    }
+                  }}
+                  className="
+                    absolute
+                    inset-0
+                    text-left
+                    cursor-pointer
+                  "
+                >
                   <motion.div
-                    key={current}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.45 }}
-                    className="absolute inset-0"
+                    onMouseMove={
+                      isTop ? handleMove : undefined
+                    }
+                    onMouseLeave={
+                      isTop ? reset : undefined
+                    }
+                    style={
+                      isTop
+                        ? {
+                            rotateX,
+                            rotateY,
+                            transformPerspective: 900,
+                          }
+                        : undefined
+                    }
+                    className="w-full h-full"
                   >
-                    <Image
-                      src={HERO_GALLERY[current]}
-                      alt={`PEEK editorial scene ${current + 1}`}
-                      className="w-full h-full object-cover"
-                      fittingType="fill"
-                    />
+                    <div
+                      className="
+                        relative
+                        w-full
+                        h-full
+                        bg-white
+                        p-3
+                        md:p-4
+                        pb-7
+                        md:pb-9
+                        shadow-[0_12px_30px_rgba(0,0,0,0.16)]
+                      "
+                    >
+                      {/* Photo */}
+                      <div className="relative w-full h-[80%] overflow-hidden bg-secondary/20">
+                        <Image
+                          src={HERO_GALLERY[photoIndex]}
+                          alt={`PEEK editorial scene ${
+                            photoIndex + 1
+                          }`}
+                          className="w-full h-full object-cover"
+                          fittingType="fill"
+                        />
+                      </div>
+
+                      {/* Caption */}
+                      <div className="relative mt-4 md:mt-5 pr-14">
+                        <p className="font-display text-base md:text-lg leading-snug text-foreground">
+                          A little joy for every morning.
+                        </p>
+                      </div>
+
+                      {/* Arrows only on top card */}
+                      {isTop && (
+                        <div className="absolute bottom-4 md:bottom-5 right-4 md:right-5 flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              prev();
+                            }}
+                            className="
+                              w-8
+                              h-8
+                              flex
+                              items-center
+                              justify-center
+                              text-foreground/60
+                              hover:text-foreground
+                              transition-colors
+                            "
+                            aria-label="Previous scene"
+                          >
+                            <ChevronLeft
+                              className="w-4 h-4"
+                              strokeWidth={1.5}
+                            />
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              next();
+                            }}
+                            className="
+                              w-8
+                              h-8
+                              flex
+                              items-center
+                              justify-center
+                              text-foreground/60
+                              hover:text-foreground
+                              transition-colors
+                            "
+                            aria-label="Next scene"
+                          >
+                            <ChevronRight
+                              className="w-4 h-4"
+                              strokeWidth={1.5}
+                            />
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </motion.div>
-                </AnimatePresence>
-              </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
 
-              {/* Caption */}
-              <div className="relative mt-4 md:mt-5 pr-14">
-                <p className="font-display text-base md:text-lg leading-snug text-foreground">
-                  A little joy for every morning.
-                </p>
-              </div>
+        {/* =====================================================
+            EXPANDED HERO GALLERY
+        ====================================================== */}
 
-              {/* Arrows */}
-              <div className="absolute bottom-4 md:bottom-5 right-4 md:right-5 flex items-center gap-1">
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    prev();
-                  }}
-                  className="w-8 h-8 flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors"
-                  aria-label="Previous scene"
-                >
-                  <ChevronLeft className="w-4 h-4" strokeWidth={1.5} />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    next();
-                  }}
-                  className="w-8 h-8 flex items-center justify-center text-foreground/60 hover:text-foreground transition-colors"
-                  aria-label="Next scene"
-                >
-                  <ChevronRight className="w-4 h-4" strokeWidth={1.5} />
-                </button>
-              </div>
-
-            </div>
-          </motion.div>
-        </motion.div>
-
-        {/* Expanded Hero gallery */}
         <AnimatePresence>
           {open && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[70] flex items-end md:items-center justify-center p-0 md:p-6"
+              className="
+                fixed
+                inset-0
+                z-[70]
+                flex
+                items-end
+                md:items-center
+                justify-center
+                p-0
+                md:p-6
+              "
             >
               <div
-                className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
+                className="
+                  absolute
+                  inset-0
+                  bg-foreground/40
+                  backdrop-blur-sm
+                "
                 onClick={() => setOpen(false)}
               />
 
@@ -253,16 +436,47 @@ export default function Hero() {
                   duration: 0.5,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative z-10 w-full max-w-6xl h-[70vh] bg-background rounded-[2.5rem] overflow-hidden grid md:grid-cols-2 shadow-2xl"
+                className="
+                  relative
+                  z-10
+                  w-full
+                  max-w-6xl
+                  h-[70vh]
+                  bg-background
+                  rounded-[2.5rem]
+                  overflow-hidden
+                  grid
+                  md:grid-cols-2
+                  shadow-2xl
+                "
               >
                 {/* Close */}
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
+                  className="
+                    absolute
+                    top-4
+                    right-4
+                    z-20
+                    w-10
+                    h-10
+                    rounded-full
+                    bg-background/80
+                    backdrop-blur
+                    flex
+                    items-center
+                    justify-center
+                    text-foreground
+                    hover:text-primary
+                    transition-colors
+                  "
                   aria-label="Close"
                 >
-                  <X className="w-5 h-5" strokeWidth={1.5} />
+                  <X
+                    className="w-5 h-5"
+                    strokeWidth={1.5}
+                  />
                 </button>
 
                 {/* Gallery image */}
@@ -278,7 +492,9 @@ export default function Hero() {
                     >
                       <Image
                         src={HERO_GALLERY[current]}
-                        alt={`PEEK editorial image ${current + 1}`}
+                        alt={`PEEK editorial image ${
+                          current + 1
+                        }`}
                         className="w-full h-full object-cover"
                         fittingType="fill"
                       />
@@ -290,24 +506,68 @@ export default function Hero() {
                     <button
                       type="button"
                       onClick={prev}
-                      className="w-10 h-10 rounded-full bg-background/85 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-background/85
+                        backdrop-blur
+                        flex
+                        items-center
+                        justify-center
+                        text-foreground
+                        hover:text-primary
+                        transition-colors
+                      "
                       aria-label="Previous image"
                     >
-                      <ChevronLeft className="w-5 h-5" strokeWidth={1.5} />
+                      <ChevronLeft
+                        className="w-5 h-5"
+                        strokeWidth={1.5}
+                      />
                     </button>
 
-                    <span className="rounded-full bg-background/85 backdrop-blur px-4 py-2 text-xs tracking-[0.2em] text-foreground">
+                    <span
+                      className="
+                        rounded-full
+                        bg-background/85
+                        backdrop-blur
+                        px-4
+                        py-2
+                        text-xs
+                        tracking-[0.2em]
+                        text-foreground
+                      "
+                    >
                       {String(current + 1).padStart(2, "0")} /{" "}
-                      {String(HERO_GALLERY.length).padStart(2, "0")}
+                      {String(HERO_GALLERY.length).padStart(
+                        2,
+                        "0"
+                      )}
                     </span>
 
                     <button
                       type="button"
                       onClick={next}
-                      className="w-10 h-10 rounded-full bg-background/85 backdrop-blur flex items-center justify-center text-foreground hover:text-primary transition-colors"
+                      className="
+                        w-10
+                        h-10
+                        rounded-full
+                        bg-background/85
+                        backdrop-blur
+                        flex
+                        items-center
+                        justify-center
+                        text-foreground
+                        hover:text-primary
+                        transition-colors
+                      "
                       aria-label="Next image"
                     >
-                      <ChevronRight className="w-5 h-5" strokeWidth={1.5} />
+                      <ChevronRight
+                        className="w-5 h-5"
+                        strokeWidth={1.5}
+                      />
                     </button>
                   </div>
                 </div>
@@ -350,12 +610,26 @@ export default function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.3, duration: 1 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground"
+        className="
+          absolute
+          bottom-8
+          left-1/2
+          -translate-x-1/2
+          flex
+          flex-col
+          items-center
+          gap-2
+          text-muted-foreground
+        "
       >
         <span className="text-xs uppercase tracking-[0.25em]">
           {t("hero.scroll")}
         </span>
-        <ArrowDown className="w-4 h-4 animate-bounce" strokeWidth={1.5} />
+
+        <ArrowDown
+          className="w-4 h-4 animate-bounce"
+          strokeWidth={1.5}
+        />
       </motion.div>
     </section>
   );

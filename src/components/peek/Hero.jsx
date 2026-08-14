@@ -6,7 +6,12 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { ArrowDown, ChevronLeft, ChevronRight, X } from "lucide-react";
+import {
+  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
+  X,
+} from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { HERO_MUG } from "@/data/products";
 import { useLang } from "./LanguageContext";
@@ -22,8 +27,6 @@ const HERO_GALLERY = [
   HERO_MUG,
 ];
 
-// Position of each card inside the physical stack.
-// The last card is the top card.
 const STACK_POSES = [
   {
     rotate: 5,
@@ -76,10 +79,14 @@ export default function Hero() {
 
   const [open, setOpen] = useState(false);
 
-  // Order of photos from bottom → top.
+  // Photos from bottom → top.
   const [stack, setStack] = useState([0]);
 
   const [current, setCurrent] = useState(0);
+
+  // Used to give a special animation to a card
+  // that has been pulled from somewhere inside the stack.
+  const [liftingCard, setLiftingCard] = useState(null);
 
   useEffect(() => {
     if (!open) return;
@@ -101,12 +108,18 @@ export default function Hero() {
 
   const rotateX = useSpring(
     useTransform(ry, [0, 1], [7, -7]),
-    { stiffness: 120, damping: 14 }
+    {
+      stiffness: 120,
+      damping: 14,
+    }
   );
 
   const rotateY = useSpring(
     useTransform(rx, [0, 1], [-9, 9]),
-    { stiffness: 120, damping: 14 }
+    {
+      stiffness: 120,
+      damping: 14,
+    }
   );
 
   const handleMove = (e) => {
@@ -122,89 +135,90 @@ export default function Hero() {
   };
 
   // ------------------------------------------------------------
-  // Stack logic
+  // Stack
   // ------------------------------------------------------------
 
   const topCard = stack[stack.length - 1];
 
   const addNextCard = () => {
-  setStack((prev) => {
-    const nextIndex =
-      (prev[prev.length - 1] + 1) % HERO_GALLERY.length;
+    setLiftingCard(null);
 
-    // Пока стопка не заполнена —
-    // новая карточка просто падает сверху.
-    if (prev.length < MAX_STACK) {
+    setStack((prev) => {
+      const last = prev[prev.length - 1];
+
+      const nextIndex =
+        (last + 1) % HERO_GALLERY.length;
+
+      // First build the physical stack.
+      if (prev.length < MAX_STACK) {
+        setCurrent(nextIndex);
+
+        return [...prev, nextIndex];
+      }
+
+      // Stack is full.
+      // Remove the top card and place the next photo on top.
+      const withoutTop = prev.slice(0, -1);
+
       setCurrent(nextIndex);
-      return [...prev, nextIndex];
+
+      return [...withoutTop, nextIndex];
+    });
+  };
+
+  const bringToTop = (photoIndex) => {
+    if (photoIndex === topCard) {
+      return;
     }
 
-    // Когда стопка заполнена —
-    // верхняя карточка снимается и уходит вниз.
-    const top = prev[prev.length - 1];
+    setLiftingCard(photoIndex);
 
-    const nextStack = [
-      ...prev.slice(0, -1),
-      top,
-    ];
+    // First allow the selected card to visually
+    // leave the stack.
+    setTimeout(() => {
+      setStack((prev) => {
+        const withoutSelected = prev.filter(
+          (item) => item !== photoIndex
+        );
 
-    // Убираем верхнюю карточку из текущей позиции
-    // и кладём новую фотографию наверх.
-    const reordered = [
-      ...prev.slice(0, -1),
-      nextIndex,
-    ];
+        const nextStack = [
+          ...withoutSelected,
+          photoIndex,
+        ];
 
-    setCurrent(nextIndex);
+        setCurrent(photoIndex);
 
-    return reordered;
-  });
-};
+        return nextStack;
+      });
 
-  const bringToTop = (index) => {
-  setStack((prev) => {
-    const topIndex = prev[prev.length - 1];
-
-    if (index === topIndex) {
-      return prev;
-    }
-
-    const withoutClicked = prev.filter(
-      (item) => item !== index
-    );
-
-    const nextStack = [
-      ...withoutClicked,
-      index,
-    ];
-
-    setCurrent(index);
-
-    return nextStack;
-  });
-};
+      setLiftingCard(null);
+    }, 180);
+  };
 
   const next = () => {
     addNextCard();
   };
 
   const prev = () => {
+    setLiftingCard(null);
+
     setStack((prev) => {
       if (prev.length <= 1) {
         return prev;
       }
 
+      const oldTop = prev[prev.length - 1];
       const newTop = prev[prev.length - 2];
 
-      const nextStack = [
-        ...prev.slice(0, prev.length - 2),
-        prev[prev.length - 1],
+      const reordered = [
+        ...prev.slice(0, -2),
+        oldTop,
         newTop,
       ];
 
       setCurrent(newTop);
 
-      return nextStack;
+      return reordered;
     });
   };
 
@@ -220,8 +234,14 @@ export default function Hero() {
       {/* Hero photograph */}
       <div className="relative w-full">
         <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{
+            opacity: 0,
+            scale: 0.96,
+          }}
+          animate={{
+            opacity: 1,
+            scale: 1,
+          }}
           transition={{
             duration: 1.2,
             delay: 0.2,
@@ -254,45 +274,62 @@ export default function Hero() {
           <AnimatePresence initial={false}>
             {stack.map((photoIndex, stackIndex) => {
               const pose =
-  STACK_POSES[
-    Math.min(stackIndex, STACK_POSES.length - 1)
-  ];
+                STACK_POSES[
+                  Math.min(
+                    stackIndex,
+                    STACK_POSES.length - 1
+                  )
+                ];
 
-const isTop = stackIndex === stack.length - 1;
-const isBottom = stackIndex === 0;
+              const isTop =
+                stackIndex === stack.length - 1;
+
+              const isLifting =
+                liftingCard === photoIndex;
 
               return (
                 <motion.div
-                  key={`${photoIndex}-${stackIndex}`}
+                  key={photoIndex}
                   initial={{
                     opacity: 0,
-                    x: 35,
-                    y: -80,
-                    rotate: pose.rotate + 8,
-                    scale: 0.94,
+                    x: 45,
+                    y: -100,
+                    rotate: pose.rotate + 10,
+                    scale: 0.92,
                   }}
-                  animate={{
-                    opacity: 1,
-                    x: pose.x,
-                    y: pose.y,
-                    rotate: pose.rotate,
-                    scale: pose.scale,
-                  }}
+                  animate={
+                    isLifting
+                      ? {
+                          opacity: 1,
+                          x: 70,
+                          y: -115,
+                          rotate: pose.rotate + 12,
+                          scale: 1.015,
+                          zIndex: 50,
+                        }
+                      : {
+                          opacity: 1,
+                          x: pose.x,
+                          y: pose.y,
+                          rotate: pose.rotate,
+                          scale: pose.scale,
+                          zIndex: stackIndex + 1,
+                        }
+                  }
                   exit={{
                     opacity: 0,
-                    x: 80,
-                    y: -70,
-                    rotate: pose.rotate + 10,
+                    x: 100,
+                    y: -130,
+                    rotate: pose.rotate + 15,
                     scale: 0.9,
                   }}
                   transition={{
                     type: "spring",
-                    stiffness: 170,
-                    damping: 18,
-                    mass: 0.8,
+                    stiffness: 180,
+                    damping: 20,
+                    mass: 0.75,
                   }}
                   style={{
-                    zIndex: stackIndex + 1,
                     transformOrigin: pose.origin,
                   }}
                   onClick={() => {
@@ -311,19 +348,25 @@ const isBottom = stackIndex === 0;
                 >
                   <motion.div
                     onMouseMove={
-                      isTop ? handleMove : undefined
+                      isTop
+                        ? handleMove
+                        : undefined
                     }
                     onMouseLeave={
-                      isTop ? reset : undefined
+                      isTop
+                        ? reset
+                        : undefined
                     }
                     style={
-                      isTop
+                      isTop && !isLifting
                         ? {
                             rotateX,
                             rotateY,
                             transformPerspective: 900,
                           }
-                        : undefined
+                        : {
+                            transformPerspective: 900,
+                          }
                     }
                     className="w-full h-full"
                   >
@@ -341,9 +384,21 @@ const isBottom = stackIndex === 0;
                       "
                     >
                       {/* Photo */}
-                      <div className="relative w-full h-[80%] overflow-hidden bg-secondary/20">
+                      <div
+                        className="
+                          relative
+                          w-full
+                          h-[80%]
+                          overflow-hidden
+                          bg-secondary/20
+                        "
+                      >
                         <Image
-                          src={HERO_GALLERY[photoIndex]}
+                          src={
+                            HERO_GALLERY[
+                              photoIndex
+                            ]
+                          }
                           alt={`PEEK editorial scene ${
                             photoIndex + 1
                           }`}
@@ -359,9 +414,20 @@ const isBottom = stackIndex === 0;
                         </p>
                       </div>
 
-                      {/* Arrows only on top card */}
+                      {/* Arrows only on top */}
                       {isTop && (
-                        <div className="absolute bottom-4 md:bottom-5 right-4 md:right-5 flex items-center gap-1">
+                        <div
+                          className="
+                            absolute
+                            bottom-4
+                            md:bottom-5
+                            right-4
+                            md:right-5
+                            flex
+                            items-center
+                            gap-1
+                          "
+                        >
                           <button
                             type="button"
                             onClick={(e) => {
@@ -452,9 +518,18 @@ const isBottom = stackIndex === 0;
               />
 
               <motion.div
-                initial={{ y: 40, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: 40, opacity: 0 }}
+                initial={{
+                  y: 40,
+                  opacity: 0,
+                }}
+                animate={{
+                  y: 0,
+                  opacity: 1,
+                }}
+                exit={{
+                  y: 40,
+                  opacity: 0,
+                }}
                 transition={{
                   duration: 0.5,
                   ease: [0.22, 1, 0.36, 1],
@@ -507,14 +582,26 @@ const isBottom = stackIndex === 0;
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={current}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.35 }}
+                      initial={{
+                        opacity: 0,
+                      }}
+                      animate={{
+                        opacity: 1,
+                      }}
+                      exit={{
+                        opacity: 0,
+                      }}
+                      transition={{
+                        duration: 0.35,
+                      }}
                       className="absolute inset-0"
                     >
                       <Image
-                        src={HERO_GALLERY[current]}
+                        src={
+                          HERO_GALLERY[
+                            current
+                          ]
+                        }
                         alt={`PEEK editorial image ${
                           current + 1
                         }`}
@@ -562,11 +649,13 @@ const isBottom = stackIndex === 0;
                         text-foreground
                       "
                     >
-                      {String(current + 1).padStart(2, "0")} /{" "}
-                      {String(HERO_GALLERY.length).padStart(
-                        2,
-                        "0"
-                      )}
+                      {String(
+                        current + 1
+                      ).padStart(2, "0")}{" "}
+                      /{" "}
+                      {String(
+                        HERO_GALLERY.length
+                      ).padStart(2, "0")}
                     </span>
 
                     <button
@@ -614,7 +703,9 @@ const isBottom = stackIndex === 0;
 
                   <div className="mt-8 border-l-2 border-secondary pl-5">
                     <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">
-                      {String(current + 1).padStart(2, "0")}
+                      {String(
+                        current + 1
+                      ).padStart(2, "0")}
                     </p>
 
                     <p className="font-display text-xl italic text-foreground">
@@ -632,7 +723,10 @@ const isBottom = stackIndex === 0;
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.3, duration: 1 }}
+        transition={{
+          delay: 1.3,
+          duration: 1,
+        }}
         className="
           absolute
           bottom-8

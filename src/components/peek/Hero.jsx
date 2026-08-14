@@ -1,4 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   motion,
   AnimatePresence,
@@ -79,14 +83,21 @@ export default function Hero() {
 
   const [open, setOpen] = useState(false);
 
-  // Photos from bottom → top.
-  const [stack, setStack] = useState([0]);
+  // Physical cards from bottom → top.
+// Each card has its own permanent identity.
+const [stack, setStack] = useState([
+  {
+    id: 0,
+    photoIndex: 0,
+  },
+]);
 
-  const [current, setCurrent] = useState(0);
+const [current, setCurrent] = useState(0);
 
-  // Used to give a special animation to a card
-  // that has been pulled from somewhere inside the stack.
-  const [liftingCard, setLiftingCard] = useState(null);
+// Physical card currently being lifted.
+const [liftingCard, setLiftingCard] = useState(null);
+
+const nextCardId = useRef(1);
 
   useEffect(() => {
     if (!open) return;
@@ -141,86 +152,110 @@ export default function Hero() {
   const topCard = stack[stack.length - 1];
 
   const addNextCard = () => {
-    setLiftingCard(null);
+  setLiftingCard(null);
 
-    setStack((prev) => {
-      const last = prev[prev.length - 1];
+  setStack((prev) => {
+    const lastPhotoIndex =
+      prev[prev.length - 1].photoIndex;
 
-      const nextIndex =
-        (last + 1) % HERO_GALLERY.length;
+    const nextIndex =
+      (lastPhotoIndex + 1) %
+      HERO_GALLERY.length;
 
-      // First build the physical stack.
-      if (prev.length < MAX_STACK) {
-        setCurrent(nextIndex);
+    const newCard = {
+      id: nextCardId.current++,
+      photoIndex: nextIndex,
+    };
 
-        return [...prev, nextIndex];
-      }
+    setCurrent(nextIndex);
 
-      // Stack is full.
-      // Remove the top card and place the next photo on top.
-      const withoutTop = prev.slice(0, -1);
-
-      setCurrent(nextIndex);
-
-      return [...withoutTop, nextIndex];
-    });
-  };
-
-  const bringToTop = (photoIndex) => {
-    if (photoIndex === topCard) {
-      return;
+    // First build the physical stack.
+    if (prev.length < MAX_STACK) {
+      return [...prev, newCard];
     }
 
-    setLiftingCard(photoIndex);
+    // Stack is full.
+    // Remove the top physical card
+    // and put a new physical card on top.
+    const withoutTop =
+      prev.slice(0, -1);
 
-    // First allow the selected card to visually
-    // leave the stack.
-    setTimeout(() => {
-      setStack((prev) => {
-        const withoutSelected = prev.filter(
-          (item) => item !== photoIndex
+    return [
+      ...withoutTop,
+      newCard,
+    ];
+  });
+};
+
+  const bringToTop = (cardId) => {
+  const selectedCard = stack.find(
+    (card) => card.id === cardId
+  );
+
+  if (!selectedCard) {
+    return;
+  }
+
+  if (selectedCard.id === topCard?.id) {
+    return;
+  }
+
+  setLiftingCard(cardId);
+
+  // First allow the selected physical card
+  // to leave its position inside the stack.
+  setTimeout(() => {
+    setStack((prev) => {
+      const withoutSelected =
+        prev.filter(
+          (card) => card.id !== cardId
         );
 
-        const nextStack = [
-          ...withoutSelected,
-          photoIndex,
-        ];
+      return [
+        ...withoutSelected,
+        selectedCard,
+      ];
+    });
 
-        setCurrent(photoIndex);
+    setCurrent(
+      selectedCard.photoIndex
+    );
 
-        return nextStack;
-      });
-
-      setLiftingCard(null);
-    }, 180);
-  };
+    setLiftingCard(null);
+  }, 300);
+};
 
   const next = () => {
     addNextCard();
   };
 
   const prev = () => {
-    setLiftingCard(null);
+  setLiftingCard(null);
 
-    setStack((prev) => {
-      if (prev.length <= 1) {
-        return prev;
-      }
+  setStack((prev) => {
+    if (prev.length <= 1) {
+      return prev;
+    }
 
-      const oldTop = prev[prev.length - 1];
-      const newTop = prev[prev.length - 2];
+    const oldTop =
+      prev[prev.length - 1];
 
-      const reordered = [
-        ...prev.slice(0, -2),
-        oldTop,
-        newTop,
-      ];
+    const newTop =
+      prev[prev.length - 2];
 
-      setCurrent(newTop);
+    const reordered = [
+      ...prev.slice(0, -2),
+      oldTop,
+      newTop,
+    ];
 
-      return reordered;
-    });
-  };
+    setCurrent(
+      newTop.photoIndex
+    );
+
+    return reordered;
+  });
+};
 
   // ------------------------------------------------------------
   // Render
@@ -272,7 +307,8 @@ export default function Hero() {
           "
         >
           <AnimatePresence initial={false}>
-            {stack.map((photoIndex, stackIndex) => {
+            {stack.map((card, stackIndex) => {
+             const photoIndex = card.photoIndex;
               const pose =
                 STACK_POSES[
                   Math.min(
@@ -285,11 +321,11 @@ export default function Hero() {
                 stackIndex === stack.length - 1;
 
               const isLifting =
-                liftingCard === photoIndex;
+               liftingCard === card.id;
 
               return (
                 <motion.div
-                  key={photoIndex}
+                  key={card.id}
                   initial={{
                     opacity: 0,
                     x: 45,
@@ -333,12 +369,12 @@ export default function Hero() {
                     transformOrigin: pose.origin,
                   }}
                   onClick={() => {
-                    if (isTop) {
-                      next();
-                    } else {
-                      bringToTop(photoIndex);
-                    }
-                  }}
+  if (isTop) {
+    next();
+  } else {
+    bringToTop(card.id);
+  }
+}}
                   className="
                     absolute
                     inset-0

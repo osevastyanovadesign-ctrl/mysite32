@@ -21,12 +21,48 @@ const HERO_GALLERY = [
 ];
 
 const POLAROID_POSES = [
-  { rotate: 5,  x: 0,   y: -18, scale: 1 },
-  { rotate: -7, x: -12, y: 14,  scale: 0.99 },
-  { rotate: 4,  x: 10,  y: -8,  scale: 1.01 },
-  { rotate: -5, x: -8,  y: 20,  scale: 0.99 },
-  { rotate: 7,  x: 6,   y: -14, scale: 1 },
-  { rotate: -4, x: -10, y: 10,  scale: 1.01 },
+  {
+    rotate: 5,
+    x: 0,
+    y: -18,
+    scale: 1,
+    origin: "bottom left",
+  },
+  {
+    rotate: -7,
+    x: -12,
+    y: 14,
+    scale: 0.99,
+    origin: "top right",
+  },
+  {
+    rotate: 4,
+    x: 10,
+    y: -8,
+    scale: 1.01,
+    origin: "bottom right",
+  },
+  {
+    rotate: -5,
+    x: -8,
+    y: 20,
+    scale: 0.99,
+    origin: "top left",
+  },
+  {
+    rotate: 7,
+    x: 6,
+    y: -14,
+    scale: 1,
+    origin: "bottom left",
+  },
+  {
+    rotate: -4,
+    x: -10,
+    y: 10,
+    scale: 1.01,
+    origin: "top right",
+  },
 ];
 
 export default function Hero() {
@@ -120,15 +156,14 @@ const reset = () => {
   className="absolute right-40 inset-y-0 my-auto w-[320px] md:w-[400px] aspect-[3/4] text-left cursor-pointer"
 >
   <motion.div
-    onMouseMove={handleMove}
-    onMouseLeave={reset}
-    style={{
-      rotateX,
-      rotateY,
-      transformPerspective: 900,
-    }}
-    className="w-full h-full"
-  >
+  onMouseMove={handleMove}
+  onMouseLeave={reset}
+  style={{
+    rotateX,
+    rotateY,
+    transformPerspective: 900,
+    transformOrigin: POLAROID_POSES[current].origin,
+  }}
 
     <div className="relative w-full h-full bg-white p-3 md:p-4 pb-7 md:pb-9 shadow-[0_12px_30px_rgba(0,0,0,0.16)]">
     

@@ -365,7 +365,10 @@ const nextCardId = useRef(1);
         mass: 0.8,
       }
     : {
-        duration: 0,
+        type: "spring",
+        stiffness: 180,
+        damping: 20,
+        mass: 0.75,
       }
 }
                   style={{

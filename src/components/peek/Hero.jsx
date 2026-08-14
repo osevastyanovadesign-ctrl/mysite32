@@ -26,38 +26,38 @@ const HERO_GALLERY = [
 // The last card is the top card.
 const STACK_POSES = [
   {
-    rotate: 4,
-    x: 0,
-    y: 8,
-    scale: 0.975,
+    rotate: 5,
+    x: -14,
+    y: 12,
+    scale: 0.965,
     origin: "bottom left",
   },
   {
-    rotate: -6,
-    x: -9,
-    y: 3,
-    scale: 0.98,
+    rotate: -7,
+    x: -10,
+    y: 6,
+    scale: 0.972,
     origin: "top right",
   },
   {
-    rotate: 3,
-    x: 7,
+    rotate: 4,
+    x: 11,
     y: -2,
-    scale: 0.985,
+    scale: 0.98,
     origin: "bottom right",
   },
   {
-    rotate: -5,
-    x: -5,
-    y: 5,
-    scale: 0.99,
+    rotate: -6,
+    x: -7,
+    y: 8,
+    scale: 0.986,
     origin: "top left",
   },
   {
     rotate: 7,
-    x: 5,
-    y: -4,
-    scale: 0.995,
+    x: 8,
+    y: -5,
+    scale: 0.993,
     origin: "bottom left",
   },
   {
@@ -128,39 +128,61 @@ export default function Hero() {
   const topCard = stack[stack.length - 1];
 
   const addNextCard = () => {
-    setStack((prev) => {
-      const nextIndex = (prev[prev.length - 1] + 1) % HERO_GALLERY.length;
+  setStack((prev) => {
+    const nextIndex =
+      (prev[prev.length - 1] + 1) % HERO_GALLERY.length;
 
-      let nextStack;
-
-      if (prev.length < MAX_STACK) {
-        nextStack = [...prev, nextIndex];
-      } else {
-        // The stack is full:
-        // the bottom card goes away and a new one falls on top.
-        nextStack = [...prev.slice(1), nextIndex];
-      }
-
+    // Пока стопка не заполнена —
+    // новая карточка просто падает сверху.
+    if (prev.length < MAX_STACK) {
       setCurrent(nextIndex);
+      return [...prev, nextIndex];
+    }
 
-      return nextStack;
-    });
-  };
+    // Когда стопка заполнена —
+    // верхняя карточка снимается и уходит вниз.
+    const top = prev[prev.length - 1];
+
+    const nextStack = [
+      ...prev.slice(0, -1),
+      top,
+    ];
+
+    // Убираем верхнюю карточку из текущей позиции
+    // и кладём новую фотографию наверх.
+    const reordered = [
+      ...prev.slice(0, -1),
+      nextIndex,
+    ];
+
+    setCurrent(nextIndex);
+
+    return reordered;
+  });
+};
 
   const bringToTop = (index) => {
-    setStack((prev) => {
-      if (prev[prev.length - 1] === index) {
-        return prev;
-      }
+  setStack((prev) => {
+    const topIndex = prev[prev.length - 1];
 
-      const withoutClicked = prev.filter((item) => item !== index);
-      const nextStack = [...withoutClicked, index];
+    if (index === topIndex) {
+      return prev;
+    }
 
-      setCurrent(index);
+    const withoutClicked = prev.filter(
+      (item) => item !== index
+    );
 
-      return nextStack;
-    });
-  };
+    const nextStack = [
+      ...withoutClicked,
+      index,
+    ];
+
+    setCurrent(index);
+
+    return nextStack;
+  });
+};
 
   const next = () => {
     addNextCard();
@@ -232,11 +254,12 @@ export default function Hero() {
           <AnimatePresence initial={false}>
             {stack.map((photoIndex, stackIndex) => {
               const pose =
-                STACK_POSES[
-                  Math.min(stackIndex, STACK_POSES.length - 1)
-                ];
+  STACK_POSES[
+    Math.min(stackIndex, STACK_POSES.length - 1)
+  ];
 
-              const isTop = stackIndex === stack.length - 1;
+const isTop = stackIndex === stack.length - 1;
+const isBottom = stackIndex === 0;
 
               return (
                 <motion.div

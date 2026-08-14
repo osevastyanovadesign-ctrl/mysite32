@@ -202,14 +202,11 @@ const nextCardId = useRef(1);
 
   setLiftingCard(cardId);
 
-  // First allow the selected physical card
-  // to leave its position inside the stack.
   setTimeout(() => {
     setStack((prev) => {
-      const withoutSelected =
-        prev.filter(
-          (card) => card.id !== cardId
-        );
+      const withoutSelected = prev.filter(
+        (card) => card.id !== cardId
+      );
 
       return [
         ...withoutSelected,
@@ -217,12 +214,12 @@ const nextCardId = useRef(1);
       ];
     });
 
-    setCurrent(
-      selectedCard.photoIndex
-    );
+    setCurrent(selectedCard.photoIndex);
 
-    setLiftingCard(null);
-  }, 300);
+    setTimeout(() => {
+      setLiftingCard(null);
+    }, 500);
+  }, 420);
 };
 
   const next = () => {
@@ -334,24 +331,24 @@ const nextCardId = useRef(1);
                     scale: 0.92,
                   }}
                   animate={
-                    isLifting
-                      ? {
-                          opacity: 1,
-                          x: 70,
-                          y: -115,
-                          rotate: pose.rotate + 12,
-                          scale: 1.015,
-                          zIndex: 50,
-                        }
-                      : {
-                          opacity: 1,
-                          x: pose.x,
-                          y: pose.y,
-                          rotate: pose.rotate,
-                          scale: pose.scale,
-                          zIndex: stackIndex + 1,
-                        }
-                  }
+ isLifting
+  ? {
+      opacity: 1,
+      x: 120,
+      y: -180,
+      rotate: pose.rotate + 12,
+      scale: 1.04,
+      zIndex: 100,
+    }
+    : {
+        opacity: 1,
+        x: pose.x,
+        y: pose.y,
+        rotate: pose.rotate,
+        scale: pose.scale,
+        zIndex: stackIndex + 1,
+      }
+}
                   exit={{
                     opacity: 0,
                     x: 100,
@@ -359,12 +356,21 @@ const nextCardId = useRef(1);
                     rotate: pose.rotate + 15,
                     scale: 0.9,
                   }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 180,
-                    damping: 20,
-                    mass: 0.75,
-                  }}
+                  transition={
+  isLifting
+    ? {
+        type: "spring",
+        stiffness: 140,
+        damping: 18,
+        mass: 0.8,
+      }
+    : {
+        type: "spring",
+        stiffness: 180,
+        damping: 20,
+        mass: 0.75,
+      }
+}
                   style={{
                     transformOrigin: pose.origin,
                   }}

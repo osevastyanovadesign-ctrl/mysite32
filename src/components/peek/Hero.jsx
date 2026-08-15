@@ -333,7 +333,7 @@ const nextCardId = useRef(1);
         x: "-25vw",
         y: 0,
         rotate: 0,
-        scale: 1.12,
+        scale: 1.28,
         zIndex: 100,
       }
     : {

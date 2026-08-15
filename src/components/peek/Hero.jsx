@@ -334,16 +334,12 @@ const nextCardId = useRef(1);;
               return (
                 <motion.div
                   key={card.id}
-                  drag={draggingCard === card.id}
+                  drag
                   dragMomentum={false}
                   dragElastic={0.08}
 
-                  onPointerDown={() => {
+                  onDragStart={() => {
                   setDraggingCard(card.id);
-                  }}
-
-                  onPointerUp={() => {
-                  setDraggingCard(null);
                   }}
 
                   onDragEnd={() => {

@@ -341,9 +341,8 @@ const didDragRef = useRef(false);
     dragMomentum={false}
     dragElastic={0.08}
     whileDrag={{
-      zIndex: 200,
-      scale: pose.scale * 1.02,
-    }}
+  zIndex: 200,
+}}
     onDragStart={() => {
   didDragRef.current = true;
   setDraggingCard(card.id);

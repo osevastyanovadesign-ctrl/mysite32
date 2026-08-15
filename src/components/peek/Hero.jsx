@@ -107,12 +107,11 @@ const [current, setCurrent] = useState(0);
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
 const [draggingCard, setDraggingCard] = useState(null);
-const dragX = useMotionValue(0);
-const dragY = useMotionValue(0);
 
 // Card currently being dragged by the mouse.
 
-const nextCardId = useRef(1);;
+const nextCardId = useRef(1);
+const didDragRef = useRef(false);
 
   useEffect(() => {
     if (!open) return;
@@ -332,225 +331,241 @@ const nextCardId = useRef(1);;
                liftingCard === card.id;
 
               return (
-                <motion.div
-                  key={card.id}
-                  drag
-                  dragMomentum={false}
-                  dragElastic={0.08}
+  <motion.div
+    key={card.id}
+    drag
+    dragMomentum={false}
+    dragElastic={0.08}
+    whileDrag={{
+      zIndex: 200,
+      scale: pose.scale * 1.02,
+    }}
+    onDragStart={() => {
+  didDragRef.current = true;
+  setDraggingCard(card.id);
+}}
 
-                  onDragStart={() => {
-                  setDraggingCard(card.id);
-                  }}
+onDragEnd={() => {
+  setDraggingCard(null);
 
-                  onDragEnd={() => {
-                  setDraggingCard(null);
-                  }}
-                  initial={{
-                    opacity: 0,
-                    x: 45,
-                    y: -100,
-                    rotate: pose.rotate + 10,
-                    scale: 0.92,
-                  }}
-                  animate={
-  isLifting
-    ? {
-        opacity: 1,
-        x: "-31vw",
-        y: 0,
-        rotate: 0,
-        scale: 1.28,
-        zIndex: 100,
+  setTimeout(() => {
+    didDragRef.current = false;
+  }, 0);
+}}
+    initial={{
+      opacity: 0,
+      x: 45,
+      y: -100,
+      rotate: pose.rotate + 10,
+      scale: 0.92,
+    }}
+    animate={
+      draggingCard === card.id
+        ? {
+            opacity: 1,
+            zIndex: 200,
+          }
+        : isLifting
+        ? {
+            opacity: 1,
+            x: "-31vw",
+            y: 0,
+            rotate: 0,
+            scale: 1.28,
+            zIndex: 100,
+          }
+        : {
+            opacity: 1,
+            x: pose.x,
+            y: pose.y,
+            rotate: pose.rotate,
+            scale: pose.scale,
+            zIndex: stackIndex + 1,
+          }
+    }
+    exit={{
+      opacity: 0,
+      x: 100,
+      y: -130,
+      rotate: pose.rotate + 15,
+      scale: 0.9,
+    }}
+    transition={
+      draggingCard === card.id
+        ? { duration: 0 }
+        : isLifting
+        ? {
+            type: "spring",
+            stiffness: 140,
+            damping: 18,
+            mass: 0.8,
+          }
+        : {
+            type: "spring",
+            stiffness: 180,
+            damping: 20,
+            mass: 0.75,
+          }
+    }
+    style={{
+      transformOrigin: pose.origin,
+    }}
+    onClick={() => {
+  if (didDragRef.current) return;
+
+  if (isTop) {
+    if (stack.length < MAX_STACK) {
+      next();
+    } else {
+      setLiftingCard(
+        liftingCard === card.id
+          ? null
+          : card.id
+      );
+    }
+  } else {
+    bringToTop(card.id);
+  }
+}}
+    className="
+      absolute
+      inset-0
+      text-left
+      cursor-grab
+      active:cursor-grabbing
+    "
+  >
+    <motion.div
+      onMouseMove={
+        isTop && draggingCard !== card.id
+          ? handleMove
+          : undefined
       }
-    : {
-        opacity: 1,
-        rotate: pose.rotate,
-        scale: pose.scale,
-        zIndex: stackIndex + 1,
+      onMouseLeave={
+        isTop && draggingCard !== card.id
+          ? reset
+          : undefined
       }
-}
-                  exit={{
-                    opacity: 0,
-                    x: 100,
-                    y: -130,
-                    rotate: pose.rotate + 15,
-                    scale: 0.9,
-                  }}
-                  transition={
-  isLifting
-    ? {
-        type: "spring",
-        stiffness: 140,
-        damping: 18,
-        mass: 0.8,
+      style={
+        isTop && !isLifting
+          ? {
+              rotateX,
+              rotateY,
+              transformPerspective: 900,
+            }
+          : {
+              transformPerspective: 900,
+            }
       }
-    : {
-        type: "spring",
-        stiffness: 180,
-        damping: 20,
-        mass: 0.75,
-      }
-}
-                  style={{
-                    transformOrigin: pose.origin,
-                  }}
-                  onClick={() => {
-                  if (isTop) {
-                  if (stack.length < MAX_STACK) {
-                  next();
-                  } else {
-                  setLiftingCard(
-                  liftingCard === card.id
-                  ? null
-                  : card.id
-                  );
-                   }
-                  } else {
-                 bringToTop(card.id);
-                 }
+      className="w-full h-full"
+    >
+      <div
+        className="
+          relative
+          w-full
+          h-full
+          bg-white
+          p-3
+          md:p-4
+          pb-7
+          md:pb-9
+          shadow-[0_12px_30px_rgba(0,0,0,0.16)]
+        "
+      >
+        {/* Photo */}
+        <div
+          className="
+            relative
+            w-full
+            h-[80%]
+            overflow-hidden
+            bg-secondary/20
+          "
+        >
+          <Image
+            src={HERO_GALLERY[photoIndex]}
+            alt={`PEEK editorial scene ${
+              photoIndex + 1
+            }`}
+            className="w-full h-full object-cover"
+            fittingType="fill"
+          />
+        </div>
+
+        {/* Caption */}
+        <div className="relative mt-4 md:mt-5 pr-14">
+          <p className="font-display text-base md:text-lg leading-snug text-foreground">
+            A little joy for every morning.
+          </p>
+        </div>
+
+        {/* Arrows only on top */}
+        {isTop && (
+          <div
+            className="
+              absolute
+              bottom-4
+              md:bottom-5
+              right-4
+              md:right-5
+              flex
+              items-center
+              gap-1
+            "
+          >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
               }}
-                  className="
-                    absolute
-                    inset-0
-                    text-left
-                    cursor-pointer
-                  "
-                >
-                  <motion.div
-                    onMouseMove={
-                      isTop
-                        ? handleMove
-                        : undefined
-                    }
-                    onMouseLeave={
-                      isTop
-                        ? reset
-                        : undefined
-                    }
-                    style={
-                      isTop && !isLifting
-                        ? {
-                            rotateX,
-                            rotateY,
-                            transformPerspective: 900,
-                          }
-                        : {
-                            transformPerspective: 900,
-                          }
-                    }
-                    className="w-full h-full"
-                  >
-                    <div
-                      className="
-                        relative
-                        w-full
-                        h-full
-                        bg-white
-                        p-3
-                        md:p-4
-                        pb-7
-                        md:pb-9
-                        shadow-[0_12px_30px_rgba(0,0,0,0.16)]
-                      "
-                    >
-                      {/* Photo */}
-                      <div
-                        className="
-                          relative
-                          w-full
-                          h-[80%]
-                          overflow-hidden
-                          bg-secondary/20
-                        "
-                      >
-                        <Image
-                          src={
-                            HERO_GALLERY[
-                              photoIndex
-                            ]
-                          }
-                          alt={`PEEK editorial scene ${
-                            photoIndex + 1
-                          }`}
-                          className="w-full h-full object-cover"
-                          fittingType="fill"
-                        />
-                      </div>
+              className="
+                w-8
+                h-8
+                flex
+                items-center
+                justify-center
+                text-foreground/60
+                hover:text-foreground
+                transition-colors
+              "
+              aria-label="Previous scene"
+            >
+              <ChevronLeft
+                className="w-4 h-4"
+                strokeWidth={1.5}
+              />
+            </button>
 
-                      {/* Caption */}
-                      <div className="relative mt-4 md:mt-5 pr-14">
-                        <p className="font-display text-base md:text-lg leading-snug text-foreground">
-                          A little joy for every morning.
-                        </p>
-                      </div>
-
-                      {/* Arrows only on top */}
-                      {isTop && (
-                        <div
-                          className="
-                            absolute
-                            bottom-4
-                            md:bottom-5
-                            right-4
-                            md:right-5
-                            flex
-                            items-center
-                            gap-1
-                          "
-                        >
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              prev();
-                            }}
-                            className="
-                              w-8
-                              h-8
-                              flex
-                              items-center
-                              justify-center
-                              text-foreground/60
-                              hover:text-foreground
-                              transition-colors
-                            "
-                            aria-label="Previous scene"
-                          >
-                            <ChevronLeft
-                              className="w-4 h-4"
-                              strokeWidth={1.5}
-                            />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              next();
-                            }}
-                            className="
-                              w-8
-                              h-8
-                              flex
-                              items-center
-                              justify-center
-                              text-foreground/60
-                              hover:text-foreground
-                              transition-colors
-                            "
-                            aria-label="Next scene"
-                          >
-                            <ChevronRight
-                              className="w-4 h-4"
-                              strokeWidth={1.5}
-                            />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </motion.div>
-              );
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
+              className="
+                w-8
+                h-8
+                flex
+                items-center
+                justify-center
+                text-foreground/60
+                hover:text-foreground
+                transition-colors
+              "
+              aria-label="Next scene"
+            >
+              <ChevronRight
+                className="w-4 h-4"
+                strokeWidth={1.5}
+              />
+            </button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  </motion.div>
+);
             })}
           </AnimatePresence>
         </div>

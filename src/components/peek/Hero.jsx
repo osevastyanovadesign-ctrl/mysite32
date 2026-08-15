@@ -98,21 +98,20 @@ export default function Hero() {
 // Each card has its own permanent identity.
 const createInitialStack = () => {
   const positions = [
-  { x: -130, y: -95, rotate: -6 },
-  { x: -25, y: -55, rotate: 5 },
-  { x: -95, y: 35, rotate: 4 },
-  { x: 35, y: 55, rotate: -7 },
-  { x: -55, y: 115, rotate: 6 },
-  { x: 55, y: -115, rotate: -3 },
+  { x: -130, y: -95 },
+  { x: -25, y: -55 },
+  { x: -95, y: 35 },
+  { x: 35, y: 55 },
+  { x: -55, y: 115 },
+  { x: 55, y: -115 },
 ];
 
   return positions.map((position, index) => ({
-    id: index,
-    photoIndex: index,
-    dragX: position.x,
-    dragY: position.y,
-    initialRotate: position.rotate,
-  }));
+  id: index,
+  photoIndex: index,
+  dragX: position.x,
+  dragY: position.y,
+}));
 };
 
 const [stack, setStack] = useState(createInitialStack);

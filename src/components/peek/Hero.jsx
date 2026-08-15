@@ -479,16 +479,18 @@ onDragEnd={(event, info) => {
           : undefined
       }
       style={
-        isTop && !isLifting
-          ? {
-              rotateX,
-              rotateY,
-              transformPerspective: 900,
-            }
-          : {
-              transformPerspective: 900,
-            }
+  isTop &&
+  !isLifting &&
+  draggingCard !== card.id
+    ? {
+        rotateX,
+        rotateY,
+        transformPerspective: 900,
       }
+    : {
+        transformPerspective: 900,
+      }
+}
       className="w-full h-full"
     >
       <div

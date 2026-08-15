@@ -85,20 +85,19 @@ export default function Hero() {
 
   // Physical cards from bottom → top.
 // Each card has its own permanent identity.
-const [stack, setStack] = useState([
-  {
-    id: 0,
-    photoIndex: 0,
-    poseIndex: 0,
-  },
-]);
+const [stack, setStack] = useState(
+  Array.from({ length: MAX_STACK }, (_, index) => ({
+    id: index,
+    photoIndex: index,
+    poseIndex: index,
+  }))
+);
 
 const [current, setCurrent] = useState(0);
 
-// Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
 
-const nextCardId = useRef(1);
+const nextCardId = useRef(MAX_STACK);
 
   useEffect(() => {
     if (!open) return;

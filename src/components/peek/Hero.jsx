@@ -302,7 +302,6 @@ const didDragRef = useRef(false);
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          ```jsx
 <div className="relative w-full aspect-[4/3] overflow-hidden">
   <Image
     src={HERO_MUG}
@@ -330,7 +329,6 @@ const didDragRef = useRef(false);
     }}
   />
 </div>
-```
 
         </motion.div>
 

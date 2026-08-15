@@ -200,26 +200,22 @@ const nextCardId = useRef(1);
     return;
   }
 
-  setLiftingCard(cardId);
+  // Нижняя карточка сразу становится верхней
+  // в обычной позиции стопки.
+  setLiftingCard(null);
 
-  setTimeout(() => {
-    setStack((prev) => {
-      const withoutSelected = prev.filter(
-        (card) => card.id !== cardId
-      );
+  setStack((prev) => {
+    const withoutSelected = prev.filter(
+      (card) => card.id !== cardId
+    );
 
-      return [
-        ...withoutSelected,
-        selectedCard,
-      ];
-    });
+    return [
+      ...withoutSelected,
+      selectedCard,
+    ];
+  });
 
-    setCurrent(selectedCard.photoIndex);
-
-    setTimeout(() => {
-      setLiftingCard(null);
-    }, 500);
-  }, 420);
+  setCurrent(selectedCard.photoIndex);
 };
 
   const next = () => {

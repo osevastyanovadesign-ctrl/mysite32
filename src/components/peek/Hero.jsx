@@ -304,70 +304,31 @@ const didDragRef = useRef(false);
           }}
         >
 <div className="relative w-full aspect-[4/3] overflow-hidden">
+  <Image
+    src={heroEditorial}
+    alt="A white Peek ceramic mug with the Eva dachshund print"
+    className="absolute inset-0 w-full h-full object-cover"
+    fittingType="fill"
+  />
 
-  {/* Blurred photograph — becomes the soft passe-partout */}
-  <div className="absolute inset-0 overflow-hidden">
-    <Image
-      src={heroEditorial}
-      alt=""
-      aria-hidden="true"
-      className="absolute inset-0 w-full h-full object-cover scale-[1.14] blur-[24px]"
-      fittingType="fill"
-    />
-  </div>
-
-  {/* Main photograph — slightly smaller than the background */}
-  <div
-    className="
-      absolute
-      inset-0
-      flex
-      items-center
-      justify-center
-    "
-  >
-    <div
-      className="
-        relative
-        w-[93%]
-        h-[93%]
-        overflow-hidden
-      "
-      style={{
-        maskImage:
-          "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 7%, black 93%, transparent 100%)",
-      }}
-    >
-      <Image
-        src={HERO_MUG}
-        alt="A white Peek ceramic mug with the Eva dachshund print"
-        className="absolute inset-0 w-full h-full object-cover"
-        fittingType="fill"
-      />
-    </div>
-  </div>
-
-  {/* Very soft bottom dissolve */}
+  {/* Soft dissolve into the background */}
   <div
     className="
       pointer-events-none
       absolute
       inset-0
-      bg-gradient-to-b
-      from-transparent
+      bg-gradient-to-r
+      from-background
       via-transparent
       to-background
     "
     style={{
       maskImage:
-        "linear-gradient(to bottom, transparent 0%, transparent 78%, black 100%)",
+        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
       WebkitMaskImage:
-        "linear-gradient(to bottom, transparent 0%, transparent 78%, black 100%)",
+        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
     }}
   />
-
 </div>
 
         </motion.div>

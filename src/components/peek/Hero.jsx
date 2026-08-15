@@ -107,6 +107,9 @@ const [current, setCurrent] = useState(0);
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
 
+// Card currently being dragged by the mouse.
+const [draggingCard, setDraggingCard] = useState(null);
+
 const nextCardId = useRef(1);
 
   useEffect(() => {

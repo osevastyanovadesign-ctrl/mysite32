@@ -302,12 +302,36 @@ const didDragRef = useRef(false);
             ease: [0.22, 1, 0.36, 1],
           }}
         >
-          <Image
-            src={HERO_MUG}
-            alt="A white Peek ceramic mug with the Eva dachshund print"
-            className="w-full aspect-[4/3] object-cover squircle-lg shadow-2xl shadow-primary/10"
-            fittingType="fill"
-          />
+          ```jsx
+<div className="relative w-full aspect-[4/3] overflow-hidden">
+  <Image
+    src={HERO_MUG}
+    alt="A white Peek ceramic mug with the Eva dachshund print"
+    className="absolute inset-0 w-full h-full object-cover"
+    fittingType="fill"
+  />
+
+  {/* Soft dissolve into the background */}
+  <div
+    className="
+      pointer-events-none
+      absolute
+      inset-0
+      bg-gradient-to-r
+      from-background
+      via-transparent
+      to-background
+    "
+    style={{
+      maskImage:
+        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
+      WebkitMaskImage:
+        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
+    }}
+  />
+</div>
+```
+
         </motion.div>
 
         {/* =====================================================

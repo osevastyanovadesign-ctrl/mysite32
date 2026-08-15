@@ -304,36 +304,48 @@ const didDragRef = useRef(false);
           }}
         >
 <div className="relative w-full aspect-[4/3] overflow-hidden">
-  <Image
-    src={heroEditorial}
-    alt="A white Peek ceramic mug with the Eva dachshund print"
+  {/* Main photo */}
+  <div
     className="
       absolute
       top-0
       left-[4%]
       w-[92%]
       h-[92%]
-      object-cover
+      overflow-hidden
     "
-    fittingType="fill"
-  />
+    style={{
+      maskImage:
+        "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+      WebkitMaskImage:
+        "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
+    }}
+  >
+    <Image
+      src={heroEditorial}
+      alt="A white Peek ceramic mug with the Eva dachshund print"
+      className="w-full h-full object-cover"
+      fittingType="fill"
+    />
+  </div>
 
-  {/* Soft dissolve — edges of the photograph melt into the background */}
+  {/* Soft atmospheric edges */}
   <div
     className="
       pointer-events-none
       absolute
-      top-0
-      left-[4%]
-      w-[92%]
-      h-[92%]
+      inset-0
     "
     style={{
-      maskImage:
-        "linear-gradient(to right, black 0%, transparent 10%, transparent 90%, black 100%)",
-      WebkitMaskImage:
-        "linear-gradient(to right, black 0%, transparent 10%, transparent 90%, black 100%)",
-      background: "linear-gradient(to right, var(--background), transparent 12%, transparent 88%, var(--background))",
+      background: `
+        linear-gradient(
+          to right,
+          hsl(var(--background)) 0%,
+          transparent 9%,
+          transparent 91%,
+          hsl(var(--background)) 100%
+        )
+      `,
     }}
   />
 </div>

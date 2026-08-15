@@ -318,22 +318,22 @@ const didDragRef = useRef(false);
     fittingType="fill"
   />
 
-  {/* Soft dissolve into the background */}
+  {/* Soft dissolve — edges of the photograph melt into the background */}
   <div
     className="
       pointer-events-none
       absolute
-      inset-0
-      bg-gradient-to-r
-      from-background
-      via-transparent
-      to-background
+      top-0
+      left-[4%]
+      w-[92%]
+      h-[92%]
     "
     style={{
       maskImage:
-        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
+        "linear-gradient(to right, black 0%, transparent 10%, transparent 90%, black 100%)",
       WebkitMaskImage:
-        "linear-gradient(to right, black 0%, transparent 27%, transparent 73%, black 100%)",
+        "linear-gradient(to right, black 0%, transparent 10%, transparent 90%, black 100%)",
+      background: "linear-gradient(to right, var(--background), transparent 12%, transparent 88%, var(--background))",
     }}
   />
 </div>

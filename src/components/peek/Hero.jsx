@@ -573,28 +573,31 @@ onDragEnd={(event, info) => {
       className="w-full h-full"
     >
       <div
-        className="
-          relative
-          w-full
-          h-full
-          bg-white
-          p-3
-          md:p-4
-          pb-7
-          md:pb-9
-          shadow-[0_12px_30px_rgba(0,0,0,0.16)]
-        "
+       className="
+  relative
+  w-full
+  h-full
+  bg-white
+  rounded-2xl
+  overflow-hidden
+  p-3
+  md:p-4
+  pb-7
+  md:pb-9
+  shadow-[0_12px_30px_rgba(0,0,0,0.16)]
+"
       >
         {/* Photo */}
         <div
   style={{ touchAction: "none" }}
   className="
-    relative
-    w-full
-    h-[80%]
-    overflow-hidden
-    bg-secondary/20
-  "
+  relative
+  w-full
+  h-[80%]
+  overflow-hidden
+  rounded-xl
+  bg-secondary/20
+"
 >
           <Image
   src={HERO_GALLERY[photoIndex]}

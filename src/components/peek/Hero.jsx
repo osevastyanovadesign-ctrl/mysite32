@@ -96,26 +96,14 @@ export default function Hero() {
 
   // Physical cards from bottom → top.
 // Each card has its own permanent identity.
-const createInitialStack = () => {
-  const positions = [
-  { x: -130, y: -95, rotate: -6 },
-  { x: -25, y: -55, rotate: 5 },
-  { x: -95, y: 35, rotate: 4 },
-  { x: 35, y: 55, rotate: -7 },
-  { x: -55, y: 115, rotate: 6 },
-  { x: 55, y: -115, rotate: -3 },
-];
-
-  return positions.map((position, index) => ({
-    id: index,
-    photoIndex: index,
-    dragX: position.x,
-    dragY: position.y,
-    initialRotate: position.rotate,
-  }));
-};
-
-const [stack, setStack] = useState(createInitialStack);
+const [stack, setStack] = useState([
+  {
+    id: 0,
+    photoIndex: 0,
+    dragX: 0,
+    dragY: 0,
+  },
+]);
 
 const [current, setCurrent] = useState(0);
 
@@ -585,31 +573,28 @@ onDragEnd={(event, info) => {
       className="w-full h-full"
     >
       <div
-       className="
-  relative
-  w-full
-  h-full
-  bg-white
-  rounded-2xl
-  overflow-hidden
-  p-3
-  md:p-4
-  pb-7
-  md:pb-9
-  shadow-[0_12px_30px_rgba(0,0,0,0.16)]
-"
+        className="
+          relative
+          w-full
+          h-full
+          bg-white
+          p-3
+          md:p-4
+          pb-7
+          md:pb-9
+          shadow-[0_12px_30px_rgba(0,0,0,0.16)]
+        "
       >
         {/* Photo */}
         <div
   style={{ touchAction: "none" }}
   className="
-  relative
-  w-full
-  h-[80%]
-  overflow-hidden
-  rounded-xl
-  bg-secondary/20
-"
+    relative
+    w-full
+    h-[80%]
+    overflow-hidden
+    bg-secondary/20
+  "
 >
           <Image
   src={HERO_GALLERY[photoIndex]}

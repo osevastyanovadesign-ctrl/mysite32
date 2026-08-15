@@ -219,7 +219,7 @@ const nextCardId = useRef(1);
     setTimeout(() => {
       setLiftingCard(null);
     }, 500);
-  }, 500);
+  }, 420);
 };
 
   const next = () => {
@@ -334,8 +334,8 @@ const nextCardId = useRef(1);
  isLifting
   ? {
       opacity: 1,
-      x: 120,
-      y: -180,
+      x: pose.x,
+      y: pose.y - 180,
       rotate: pose.rotate + 12,
       scale: 1.04,
       zIndex: 100,

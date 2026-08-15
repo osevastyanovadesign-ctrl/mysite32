@@ -34,44 +34,54 @@ const HERO_GALLERY = [
 
 const STACK_POSES = [
   {
-    x: -145,
-    y: -115,
-    rotate: -8,
-    scale: 0.96,
-    origin: "bottom right",
-  },
-  {
-    x: -35,
-    y: -75,
     rotate: 5,
-    scale: 0.975,
+    x: -14,
+    y: 12,
+    scale: 0.965,
     origin: "bottom left",
   },
+
+  // 2
   {
-    x: -105,
-    y: 35,
-    rotate: -4,
-    scale: 0.985,
+    rotate: -7,
+    x: -10,
+    y: 6,
+    scale: 0.972,
     origin: "top right",
   },
+
+  // 3
   {
-    x: 20,
-    y: 65,
-    rotate: 8,
-    scale: 0.97,
-    origin: "top left",
-  },
-  {
-    x: -65,
-    y: 125,
-    rotate: -6,
-    scale: 0.99,
+    rotate: 4,
+    x: 11,
+    y: -2,
+    scale: 0.98,
     origin: "bottom right",
   },
+
+  // 4
   {
-    x: 55,
-    y: -105,
-    rotate: 3,
+    rotate: -6,
+    x: -7,
+    y: 8,
+    scale: 0.986,
+    origin: "top left",
+  },
+
+  // 5
+  {
+    rotate: 7,
+    x: 8,
+    y: -5,
+    scale: 0.993,
+    origin: "bottom left",
+  },
+
+  // 6 — верхняя
+  {
+    rotate: -2,
+    x: 0,
+    y: 0,
     scale: 1,
     origin: "center center",
   },
@@ -86,13 +96,23 @@ export default function Hero() {
 
   // Physical cards from bottom → top.
 // Each card has its own permanent identity.
-const createInitialStack = () =>
-  HERO_GALLERY.map((_, index) => ({
-    id: index,
-    photoIndex: index,
-    dragX: 0,
-    dragY: 0,
-  }));
+const createInitialStack = () => {
+  const positions = [
+  { x: -130, y: -95 },
+  { x: -25, y: -55 },
+  { x: -95, y: 35 },
+  { x: 35, y: 55 },
+  { x: -55, y: 115 },
+  { x: 55, y: -115 },
+];
+
+  return positions.map((position, index) => ({
+  id: index,
+  photoIndex: index,
+  dragX: position.x,
+  dragY: position.y,
+}));
+};
 
 const [stack, setStack] = useState(createInitialStack);
 

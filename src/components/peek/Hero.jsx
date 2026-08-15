@@ -315,11 +315,39 @@ const didDragRef = useRef(false);
       overflow-hidden
     "
     style={{
-      maskImage:
-        "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-      WebkitMaskImage:
-        "linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)",
-    }}
+  maskImage: `
+    linear-gradient(
+      to bottom,
+      black 0%,
+      black 78%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    )
+  `,
+  maskComposite: "intersect",
+  WebkitMaskImage: `
+    linear-gradient(
+      to bottom,
+      black 0%,
+      black 78%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    )
+  `,
+  WebkitMaskComposite: "source-in",
+}}
   >
     <Image
       src={heroEditorial}
@@ -346,22 +374,6 @@ const didDragRef = useRef(false);
           hsl(var(--background)) 100%
         )
       `,
-    }}
-  />
-
-  {/* Soft bottom dissolve */}
-  <div
-    className="
-      pointer-events-none
-      absolute
-      left-[4%]
-      bottom-0
-      w-[92%]
-      h-[16%]
-    "
-    style={{
-      background:
-        "linear-gradient(to bottom, transparent 0%, hsl(var(--background)) 100%)",
     }}
   />
 </div>

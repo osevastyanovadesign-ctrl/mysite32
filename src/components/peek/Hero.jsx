@@ -334,8 +334,8 @@ const nextCardId = useRef(1);
  isLifting
   ? {
       opacity: 1,
-      x: pose.x,
-      y: pose.y - 180,
+      x: 120,
+      y: -180,
       rotate: pose.rotate + 12,
       scale: 1.04,
       zIndex: 100,

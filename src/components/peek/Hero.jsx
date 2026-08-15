@@ -89,6 +89,7 @@ const [stack, setStack] = useState([
   {
     id: 0,
     photoIndex: 0,
+    poseIndex: 0,
   },
 ]);
 
@@ -96,7 +97,6 @@ const [current, setCurrent] = useState(0);
 
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
-const [liftingIndex, setLiftingIndex] = useState(null);
 
 const nextCardId = useRef(1);
 
@@ -164,9 +164,13 @@ const nextCardId = useRef(1);
       HERO_GALLERY.length;
 
     const newCard = {
-      id: nextCardId.current++,
-      photoIndex: nextIndex,
-    };
+  id: nextCardId.current++,
+  photoIndex: nextIndex,
+  poseIndex: Math.min(
+    prev.length,
+    STACK_POSES.length - 1
+  ),
+};
 
     setCurrent(nextIndex);
 
@@ -188,31 +192,45 @@ const nextCardId = useRef(1);
   });
 };
 
-  const bringToTop = (cardId) => {
+    const bringToTop = (cardId) => {
   const selectedCard = stack.find(
     (card) => card.id === cardId
   );
 
-  if (!selectedCard) {
-    return;
-  }
+  if (!selectedCard) return;
 
-  if (selectedCard.id === topCard?.id) {
-    return;
-  }
+  if (selectedCard.id === topCard?.id) return;
 
   setLiftingCard(cardId);
-  setLiftingIndex(stack.indexOf(selectedCard));
 
   setTimeout(() => {
     setStack((prev) => {
+      const selected = prev.find(
+        (card) => card.id === cardId
+      );
+
+      if (!selected) return prev;
+
       const withoutSelected = prev.filter(
         (card) => card.id !== cardId
       );
 
+      const updatedStack = withoutSelected.map(
+        (card, index) => ({
+          ...card,
+          poseIndex: index,
+        })
+      );
+
       return [
-        ...withoutSelected,
-        selectedCard,
+        ...updatedStack,
+        {
+          ...selected,
+          poseIndex: Math.min(
+            updatedStack.length,
+            STACK_POSES.length - 1
+          ),
+        },
       ];
     });
 
@@ -220,8 +238,8 @@ const nextCardId = useRef(1);
 
     setTimeout(() => {
       setLiftingCard(null);
-    }, 500);
-  }, 420);
+    }, 50);
+  }, 500);
 };
 
   const next = () => {
@@ -315,7 +333,7 @@ const isLifting =
 const pose =
   STACK_POSES[
     Math.min(
-      stackIndex,
+      card.poseIndex,
       STACK_POSES.length - 1
     )
   ];
@@ -528,7 +546,6 @@ const isTop =
               );
             })}
         </div>
-      </div>
 
         {/* =====================================================
             EXPANDED HERO GALLERY

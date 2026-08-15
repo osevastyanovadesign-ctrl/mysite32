@@ -39,6 +39,8 @@ const STACK_POSES = [
     scale: 0.965,
     origin: "bottom left",
   },
+
+  // 2
   {
     rotate: -7,
     x: -10,
@@ -46,6 +48,8 @@ const STACK_POSES = [
     scale: 0.972,
     origin: "top right",
   },
+
+  // 3
   {
     rotate: 4,
     x: 11,
@@ -53,6 +57,8 @@ const STACK_POSES = [
     scale: 0.98,
     origin: "bottom right",
   },
+
+  // 4
   {
     rotate: -6,
     x: -7,
@@ -60,6 +66,8 @@ const STACK_POSES = [
     scale: 0.986,
     origin: "top left",
   },
+
+  // 5
   {
     rotate: 7,
     x: 8,
@@ -67,6 +75,8 @@ const STACK_POSES = [
     scale: 0.993,
     origin: "bottom left",
   },
+
+  // 6 — верхняя
   {
     rotate: -2,
     x: 0,

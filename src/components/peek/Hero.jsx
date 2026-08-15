@@ -106,8 +106,6 @@ const [current, setCurrent] = useState(0);
 
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
-const [draggedCard, setDraggedCard] = useState(null);
-const [cardPositions, setCardPositions] = useState({});
 
 const nextCardId = useRef(1);
 
@@ -327,16 +325,10 @@ const nextCardId = useRef(1);
 
               const isLifting =
                liftingCard === card.id;
-              const position = cardPositions[card.id];
-
-              const isDragged =
-              draggedCard === card.id;
 
               return (
                 <motion.div
                   key={card.id}
-                  drag={!isLifting}
-                  dragMomentum={false}
                   initial={{
                     opacity: 0,
                     x: 45,
@@ -345,26 +337,24 @@ const nextCardId = useRef(1);
                     scale: 0.92,
                   }}
                   animate={
-                  isLifting
-                  ? {
-                  opacity: 1,
-                  x: "-31vw",
-                  y: 0,
-                  rotate: 0,
-                  scale: 1.28,
-                  zIndex: 100,
-                   }
-                  : {
-                  opacity: 1,
-                  x: position?.x ?? pose.x,
-                  y: position?.y ?? pose.y,
-                  rotate: pose.rotate,
-                  scale: pose.scale,
-                  zIndex: isDragged
-                 ? 200
-                  : stackIndex + 1,
-                  }
-               }
+  isLifting
+    ? {
+        opacity: 1,
+        x: "-31vw",
+        y: 0,
+        rotate: 0,
+        scale: 1.28,
+        zIndex: 100,
+      }
+    : {
+        opacity: 1,
+        x: pose.x,
+        y: pose.y,
+        rotate: pose.rotate,
+        scale: pose.scale,
+        zIndex: stackIndex + 1,
+      }
+}
                   exit={{
                     opacity: 0,
                     x: 100,
@@ -390,21 +380,6 @@ const nextCardId = useRef(1);
                   style={{
                     transformOrigin: pose.origin,
                   }}
-                  onDragStart={() => {
-  setDraggedCard(card.id);
-}}
-
-onDragEnd={(e, info) => {
-  setDraggedCard(null);
-
-  setCardPositions((prev) => ({
-    ...prev,
-    [card.id]: {
-      x: (prev[card.id]?.x ?? pose.x) + info.offset.x,
-      y: (prev[card.id]?.y ?? pose.y) + info.offset.y,
-    },
-  }));
-}}
                   onClick={() => {
                   if (isTop) {
                   if (stack.length < MAX_STACK) {

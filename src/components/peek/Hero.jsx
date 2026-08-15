@@ -171,12 +171,18 @@ const didDragRef = useRef(false);
   setLiftingCard(null);
 
   setStack((prev) => {
-    const lastPhotoIndex =
-      prev[prev.length - 1].photoIndex;
+    const usedPhotoIndexes = new Set(
+  prev.map((card) => card.photoIndex)
+);
 
-    const nextIndex =
-      (lastPhotoIndex + 1) %
-      HERO_GALLERY.length;
+let nextIndex = 0;
+
+for (let i = 0; i < HERO_GALLERY.length; i++) {
+  if (!usedPhotoIndexes.has(i)) {
+    nextIndex = i;
+    break;
+  }
+}
 
     const newCard = {
   id: nextCardId.current++,

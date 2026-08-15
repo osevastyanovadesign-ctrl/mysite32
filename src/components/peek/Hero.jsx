@@ -99,6 +99,8 @@ const [stack, setStack] = useState([
   {
     id: 0,
     photoIndex: 0,
+    dragX: 0,
+    dragY: 0,
   },
 ]);
 
@@ -177,9 +179,11 @@ const didDragRef = useRef(false);
       HERO_GALLERY.length;
 
     const newCard = {
-      id: nextCardId.current++,
-      photoIndex: nextIndex,
-    };
+  id: nextCardId.current++,
+  photoIndex: nextIndex,
+  dragX: 0,
+  dragY: 0,
+};
 
     setCurrent(nextIndex);
 

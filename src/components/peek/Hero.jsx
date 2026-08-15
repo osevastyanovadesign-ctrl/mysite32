@@ -19,6 +19,7 @@ import {
 import { Image } from "@/components/ui/image";
 import { HERO_MUG } from "@/data/products";
 import { useLang } from "./LanguageContext";
+import heroEditorial from "@/assets/peek-hero-editorial.jpg";
 
 // Temporary Hero gallery.
 // Replace these images later with the final editorial photographs.
@@ -304,7 +305,7 @@ const didDragRef = useRef(false);
         >
 <div className="relative w-full aspect-[4/3] overflow-hidden">
   <Image
-    src={HERO_MUG}
+    src={heroEditorial}
     alt="A white Peek ceramic mug with the Eva dachshund print"
     className="absolute inset-0 w-full h-full object-cover"
     fittingType="fill"

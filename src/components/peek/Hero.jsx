@@ -591,12 +591,13 @@ onDragEnd={(event, info) => {
         <div
   style={{ touchAction: "none" }}
   className="
-    relative
-    w-full
-    h-[80%]
-    overflow-hidden
-    bg-secondary/20
-  "
+  relative
+  w-full
+  h-[80%]
+  overflow-hidden
+  rounded-xl
+  bg-secondary/20
+"
 >
           <Image
   src={HERO_GALLERY[photoIndex]}

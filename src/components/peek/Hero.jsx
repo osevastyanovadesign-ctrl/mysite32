@@ -308,19 +308,20 @@ const nextCardId = useRef(1);
           <AnimatePresence initial={false}>
             {stack.map((card, stackIndex) => {
              const photoIndex = card.photoIndex;
-              const pose =
-                STACK_POSES[
-                  Math.min(
-                    stackIndex,
-                    STACK_POSES.length - 1
-                  )
-                ];
 
-              const isTop =
-                stackIndex === stack.length - 1;
+const isLifting =
+  liftingCard === card.id;
 
-              const isLifting =
-               liftingCard === card.id;
+const pose =
+  STACK_POSES[
+    Math.min(
+      stackIndex,
+      STACK_POSES.length - 1
+    )
+  ];
+
+const isTop =
+  stackIndex === stack.length - 1;
 
               return (
                 <motion.div

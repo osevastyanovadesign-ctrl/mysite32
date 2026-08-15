@@ -152,8 +152,6 @@ const nextCardId = useRef(1);
   const topCard = stack[stack.length - 1];
 
   const addNextCard = () => {
-  setLiftingCard(null);
-
   setStack((prev) => {
     const lastPhotoIndex =
       prev[prev.length - 1].photoIndex;
@@ -166,6 +164,21 @@ const nextCardId = useRef(1);
       id: nextCardId.current++,
       photoIndex: nextIndex,
     };
+
+    setCurrent(nextIndex);
+
+    if (prev.length < MAX_STACK) {
+      return [...prev, newCard];
+    }
+
+    const withoutTop = prev.slice(0, -1);
+
+    return [
+      ...withoutTop,
+      newCard,
+    ];
+  });
+};
 
     setCurrent(nextIndex);
 
@@ -223,8 +236,46 @@ const nextCardId = useRef(1);
 };
 
   const next = () => {
-    addNextCard();
-  };
+  const top = stack[stack.length - 1];
+
+  if (!top) return;
+
+  // First click on the top card:
+  // lift it and reveal/create the next card underneath.
+  if (liftingCard !== top.id) {
+    setLiftingCard(top.id);
+
+    if (stack.length === 1) {
+      addNextCard();
+    }
+
+    return;
+  }
+
+  // Second click on the lifted top card:
+  // move it to the bottom of the physical stack.
+  setLiftingCard(null);
+
+  setStack((prev) => {
+    if (prev.length <= 1) {
+      return prev;
+    }
+
+    const oldTop = prev[prev.length - 1];
+
+    const reordered = [
+      oldTop,
+      ...prev.slice(0, -1),
+    ];
+
+    const newTop =
+      reordered[reordered.length - 1];
+
+    setCurrent(newTop.photoIndex);
+
+    return reordered;
+  });
+};
 
   const prev = () => {
   setLiftingCard(null);

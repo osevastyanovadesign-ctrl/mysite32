@@ -336,10 +336,11 @@ const didDragRef = useRef(false);
 
               return (
   <motion.div
-    key={card.id}
-    drag
-    dragMomentum={false}
-    dragElastic={0.08}
+  key={card.id}
+  drag
+  dragListener={true}
+  dragMomentum={false}
+  dragElastic={0.08}
     whileDrag={{
   zIndex: 200,
 }}
@@ -508,22 +509,24 @@ onDragEnd={(event, info) => {
       >
         {/* Photo */}
         <div
-          className="
-            relative
-            w-full
-            h-[80%]
-            overflow-hidden
-            bg-secondary/20
-          "
-        >
+  style={{ touchAction: "none" }}
+  className="
+    relative
+    w-full
+    h-[80%]
+    overflow-hidden
+    bg-secondary/20
+  "
+>
           <Image
-            src={HERO_GALLERY[photoIndex]}
-            alt={`PEEK editorial scene ${
-              photoIndex + 1
-            }`}
-            className="w-full h-full object-cover"
-            fittingType="fill"
-          />
+  src={HERO_GALLERY[photoIndex]}
+  alt={`PEEK editorial scene ${
+    photoIndex + 1
+  }`}
+  draggable={false}
+  className="w-full h-full object-cover"
+  fittingType="fill"
+/>
         </div>
 
         {/* Caption */}

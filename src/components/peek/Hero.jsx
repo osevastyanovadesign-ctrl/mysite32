@@ -371,12 +371,20 @@ const nextCardId = useRef(1);
                     transformOrigin: pose.origin,
                   }}
                   onClick={() => {
-  if (isTop) {
-    next();
-  } else {
-    bringToTop(card.id);
-  }
-}}
+                  if (isTop) {
+                  if (stack.length < MAX_STACK) {
+                  next();
+                  } else {
+                  setLiftingCard(
+                  liftingCard === card.id
+                  ? null
+                  : card.id
+                  );
+                   }
+                  } else {
+                 bringToTop(card.id);
+                 }
+              }}
                   className="
                     absolute
                     inset-0

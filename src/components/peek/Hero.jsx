@@ -353,18 +353,32 @@ onDragEnd={(event, info) => {
   const movedX = info.offset.x;
   const movedY = info.offset.y;
 
-  setStack((prev) =>
-    prev.map((item) =>
-      item.id === card.id
-        ? {
-            ...item,
-            dragX: item.dragX + movedX,
-            dragY: item.dragY + movedY,
-          }
-        : item
-    )
-  );
+  setStack((prev) => {
+    const selectedCard = prev.find(
+      (item) => item.id === card.id
+    );
 
+    if (!selectedCard) {
+      return prev;
+    }
+
+    const updatedCard = {
+      ...selectedCard,
+      dragX: selectedCard.dragX + movedX,
+      dragY: selectedCard.dragY + movedY,
+    };
+
+    const withoutSelected = prev.filter(
+      (item) => item.id !== card.id
+    );
+
+    return [
+      ...withoutSelected,
+      updatedCard,
+    ];
+  });
+
+  setCurrent(card.photoIndex);
   setDraggingCard(null);
 
   setTimeout(() => {

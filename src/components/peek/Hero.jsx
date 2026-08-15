@@ -372,7 +372,13 @@ const nextCardId = useRef(1);
                   }}
                   onClick={() => {
   if (isTop) {
-    next();
+    if (stack.length === 1) {
+      addNextCard();
+    } else if (liftingCard === card.id) {
+      setLiftingCard(null);
+    } else {
+      setLiftingCard(card.id);
+    }
   } else {
     bringToTop(card.id);
   }

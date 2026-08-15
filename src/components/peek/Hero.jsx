@@ -94,14 +94,6 @@ const createInitialStack = () =>
     dragY: 0,
   }));
 
-  return positions.map((position, index) => ({
-  id: index,
-  photoIndex: index,
-  dragX: position.x,
-  dragY: position.y,
-}));
-};
-
 const [stack, setStack] = useState(createInitialStack);
 
 const [current, setCurrent] = useState(0);

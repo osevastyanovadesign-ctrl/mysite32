@@ -329,7 +329,7 @@ const didDragRef = useRef(false);
     />
   </div>
 
-  {/* Soft atmospheric edges */}
+  {/* Soft side edges */}
   <div
     className="
       pointer-events-none
@@ -346,6 +346,22 @@ const didDragRef = useRef(false);
           hsl(var(--background)) 100%
         )
       `,
+    }}
+  />
+
+  {/* Soft bottom dissolve */}
+  <div
+    className="
+      pointer-events-none
+      absolute
+      left-[4%]
+      bottom-0
+      w-[92%]
+      h-[16%]
+    "
+    style={{
+      background:
+        "linear-gradient(to bottom, transparent 0%, hsl(var(--background)) 100%)",
     }}
   />
 </div>

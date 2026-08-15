@@ -219,8 +219,22 @@ const nextCardId = useRef(1);
 };
 
   const next = () => {
+  const top = stack[stack.length - 1];
+
+  if (!top) return;
+
+  if (stack.length === 1) {
     addNextCard();
-  };
+    return;
+  }
+
+  if (liftingCard === top.id) {
+    setLiftingCard(null);
+    return;
+  }
+
+  setLiftingCard(top.id);
+};
 
   const prev = () => {
   setLiftingCard(null);

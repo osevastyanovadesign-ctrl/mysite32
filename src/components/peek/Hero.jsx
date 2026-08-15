@@ -315,7 +315,9 @@ const isLifting =
 const pose =
   STACK_POSES[
     Math.min(
-      stackIndex,
+      isLifting && liftingIndex !== null
+        ? liftingIndex
+        : stackIndex,
       STACK_POSES.length - 1
     )
   ];

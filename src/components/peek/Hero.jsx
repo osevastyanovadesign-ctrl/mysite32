@@ -307,7 +307,14 @@ const didDragRef = useRef(false);
   <Image
     src={heroEditorial}
     alt="A white Peek ceramic mug with the Eva dachshund print"
-    className="absolute inset-0 w-full h-full object-cover"
+    className="
+      absolute
+      top-0
+      left-[4%]
+      w-[92%]
+      h-[92%]
+      object-cover
+    "
     fittingType="fill"
   />
 

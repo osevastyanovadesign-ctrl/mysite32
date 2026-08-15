@@ -219,7 +219,7 @@ const nextCardId = useRef(1);
     setTimeout(() => {
       setLiftingCard(null);
     }, 500);
-  }, 420);
+  }, 500);
 };
 
   const next = () => {

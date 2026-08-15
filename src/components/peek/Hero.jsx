@@ -109,10 +109,6 @@ const [liftingCard, setLiftingCard] = useState(null);
 
 // Card currently being dragged by the mouse.
 const [draggingCard, setDraggingCard] = useState(null);
-const [dragOffset, setDragOffset] = useState({
-  x: 0,
-  y: 0,
-});
 
 const nextCardId = useRef(1);
 
@@ -335,38 +331,8 @@ const nextCardId = useRef(1);
 
               return (
                 <motion.div
-  key={card.id}
-
-  onPointerDown={(e) => {
-    e.currentTarget.setPointerCapture(e.pointerId);
-
-    setDraggingCard(card.id);
-    setDragOffset({
-      x: 0,
-      y: 0,
-    });
-  }}
-
-  onPointerMove={(e) => {
-    if (draggingCard !== card.id) return;
-
-    setDragOffset((prev) => ({
-      x: prev.x + e.movementX,
-      y: prev.y + e.movementY,
-    }));
-  }}
-
-  onPointerUp={(e) => {
-    e.currentTarget.releasePointerCapture(e.pointerId);
-    setDraggingCard(null);
-  }}
-
-  onPointerCancel={(e) => {
-    e.currentTarget.releasePointerCapture(e.pointerId);
-    setDraggingCard(null);
-  }}
-
-  initial={{
+                  key={card.id}
+                  initial={{
                     opacity: 0,
                     x: 45,
                     y: -100,
@@ -381,15 +347,6 @@ const nextCardId = useRef(1);
         y: 0,
         rotate: 0,
         scale: 1.28,
-        zIndex: 100,
-      }
-    : draggingCard === card.id
-    ? {
-        opacity: 1,
-        x: pose.x + dragOffset.x,
-        y: pose.y + dragOffset.y,
-        rotate: pose.rotate,
-        scale: pose.scale,
         zIndex: 100,
       }
     : {

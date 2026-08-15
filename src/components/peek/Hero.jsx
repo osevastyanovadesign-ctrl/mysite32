@@ -110,7 +110,10 @@ const [liftingCard, setLiftingCard] = useState(null);
 // Card currently being dragged by the mouse.
 const [draggingCard, setDraggingCard] = useState(null);
 
-const nextCardId = useRef(1);
+const dragCardRef = useRef(null);
+const dragOffsetRef = useRef({ x: 0, y: 0 });
+
+const nextCardId = useRef(1);;
 
   useEffect(() => {
     if (!open) return;
@@ -332,6 +335,19 @@ const nextCardId = useRef(1);
               return (
                 <motion.div
                   key={card.id}
+                  drag
+                  dragMomentum={false}
+                  dragElastic={0.12}
+
+                  onDragStart={() => {
+                  dragCardRef.current = card.id;
+                  setDraggingCard(card.id);
+                  }}
+
+                 onDragEnd={() => {
+                 dragCardRef.current = null;
+                 setDraggingCard(null);
+                 }}
                   initial={{
                     opacity: 0,
                     x: 45,
@@ -351,8 +367,6 @@ const nextCardId = useRef(1);
       }
     : {
         opacity: 1,
-        x: pose.x,
-        y: pose.y,
         rotate: pose.rotate,
         scale: pose.scale,
         zIndex: stackIndex + 1,

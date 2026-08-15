@@ -171,41 +171,43 @@ const didDragRef = useRef(false);
   setLiftingCard(null);
 
   setStack((prev) => {
+    let nextStack = [...prev];
+
+    // Если стопка уже заполнена,
+    // сначала убираем верхнюю карточку.
+    if (nextStack.length >= MAX_STACK) {
+      nextStack = nextStack.slice(0, -1);
+    }
+
+    // Находим фотографию, которой ещё нет в стопке.
     const usedPhotoIndexes = new Set(
-  prev.map((card) => card.photoIndex)
-);
+      nextStack.map((card) => card.photoIndex)
+    );
 
-let nextIndex = 0;
+    let nextIndex = 0;
 
-for (let i = 0; i < HERO_GALLERY.length; i++) {
-  if (!usedPhotoIndexes.has(i)) {
-    nextIndex = i;
-    break;
-  }
-}
+    for (
+      let i = 0;
+      i < HERO_GALLERY.length;
+      i++
+    ) {
+      if (!usedPhotoIndexes.has(i)) {
+        nextIndex = i;
+        break;
+      }
+    }
 
     const newCard = {
-  id: nextCardId.current++,
-  photoIndex: nextIndex,
-  dragX: 0,
-  dragY: 0,
-};
+      id: nextCardId.current++,
+      photoIndex: nextIndex,
+      dragX: 0,
+      dragY: 0,
+    };
 
     setCurrent(nextIndex);
 
-    // First build the physical stack.
-    if (prev.length < MAX_STACK) {
-      return [...prev, newCard];
-    }
-
-    // Stack is full.
-    // Remove the top physical card
-    // and put a new physical card on top.
-    const withoutTop =
-      prev.slice(0, -1);
-
     return [
-      ...withoutTop,
+      ...nextStack,
       newCard,
     ];
   });

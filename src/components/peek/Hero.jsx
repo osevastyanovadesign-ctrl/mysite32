@@ -96,6 +96,7 @@ const [current, setCurrent] = useState(0);
 
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
+const [liftingIndex, setLiftingIndex] = useState(null);
 
 const nextCardId = useRef(1);
 
@@ -201,6 +202,7 @@ const nextCardId = useRef(1);
   }
 
   setLiftingCard(cardId);
+  setLiftingIndex(stack.indexOf(selectedCard));
 
   setTimeout(() => {
     setStack((prev) => {

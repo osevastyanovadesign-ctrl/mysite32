@@ -349,7 +349,22 @@ const didDragRef = useRef(false);
   setDraggingCard(card.id);
 }}
 
-onDragEnd={() => {
+onDragEnd={(event, info) => {
+  const movedX = info.offset.x;
+  const movedY = info.offset.y;
+
+  setStack((prev) =>
+    prev.map((item) =>
+      item.id === card.id
+        ? {
+            ...item,
+            dragX: item.dragX + movedX,
+            dragY: item.dragY + movedY,
+          }
+        : item
+    )
+  );
+
   setDraggingCard(null);
 
   setTimeout(() => {
@@ -378,14 +393,14 @@ onDragEnd={() => {
             scale: 1.28,
             zIndex: 100,
           }
-        : {
-            opacity: 1,
-            x: pose.x,
-            y: pose.y,
-            rotate: pose.rotate,
-            scale: pose.scale,
-            zIndex: stackIndex + 1,
-          }
+        :{
+    opacity: 1,
+    x: pose.x + card.dragX,
+    y: pose.y + card.dragY,
+    rotate: pose.rotate,
+    scale: pose.scale,
+    zIndex: stackIndex + 1,
+  }
     }
     exit={{
       opacity: 0,

@@ -98,13 +98,13 @@ export default function Hero() {
 // Each card has its own permanent identity.
 const createInitialStack = () => {
   const positions = [
-    { x: -90, y: -95, rotate: -6 },
-    { x: 45, y: -55, rotate: 5 },
-    { x: -35, y: 35, rotate: 4 },
-    { x: 105, y: 55, rotate: -7 },
-    { x: 15, y: 115, rotate: 6 },
-    { x: 125, y: -115, rotate: -3 },
-  ];
+  { x: -130, y: -95, rotate: -6 },
+  { x: -25, y: -55, rotate: 5 },
+  { x: -95, y: 35, rotate: 4 },
+  { x: 35, y: 55, rotate: -7 },
+  { x: -55, y: 115, rotate: 6 },
+  { x: 55, y: -115, rotate: -3 },
+];
 
   return positions.map((position, index) => ({
     id: index,

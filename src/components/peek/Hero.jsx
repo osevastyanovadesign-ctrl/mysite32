@@ -219,8 +219,29 @@ const nextCardId = useRef(1);
 };
 
   const next = () => {
+  const top = stack[stack.length - 1];
+
+  if (!top) {
+    return;
+  }
+
+  // First click on the only card:
+  // create the physical stack.
+  if (stack.length === 1) {
     addNextCard();
-  };
+    return;
+  }
+
+  // If the top card is already lifted,
+  // return it to the normal stack position.
+  if (liftingCard === top.id) {
+    setLiftingCard(null);
+    return;
+  }
+
+  // Otherwise lift the top card.
+  setLiftingCard(top.id);
+};
 
   const prev = () => {
   setLiftingCard(null);

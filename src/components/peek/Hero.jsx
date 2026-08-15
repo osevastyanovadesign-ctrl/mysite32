@@ -147,128 +147,128 @@ const nextCardId = useRef(1);
   };
 
   // ------------------------------------------------------------
-  // Stack
-  // ------------------------------------------------------------
+// Stack
+// ------------------------------------------------------------
 
-  const topCard = stack[stack.length - 1];
+const topCard = stack[stack.length - 1];
 
-  const addNextCard = () => {
+const addNextCard = () => {
   setLiftingCard(null);
 
   setStack((prev) => {
-    const lastPhotoIndex =
-      prev[prev.length - 1].photoIndex;
+    if (prev.length === 0) return prev;
 
-    const nextIndex =
-      (lastPhotoIndex + 1) %
+    const oldTop = prev[prev.length - 1];
+
+    const nextPhotoIndex =
+      (oldTop.photoIndex + 1) %
       HERO_GALLERY.length;
 
     const newCard = {
-  id: nextCardId.current++,
-  photoIndex: nextIndex,
-  poseIndex: Math.min(
-    prev.length,
-    STACK_POSES.length - 1
-  ),
-};
+      id: nextCardId.current++,
+      photoIndex: nextPhotoIndex,
+      poseIndex: 0,
+    };
 
-    setCurrent(nextIndex);
+    // Верхняя физическая карточка уходит из стопки.
+    // Остальные карточки поднимаются на один уровень.
+    const shifted = prev
+      .slice(0, -1)
+      .map((card, index) => ({
+        ...card,
+        poseIndex: index + 1,
+      }));
 
-    // First build the physical stack.
-    if (prev.length < MAX_STACK) {
-      return [...prev, newCard];
-    }
-
-    // Stack is full.
-    // Remove the top physical card
-    // and put a new physical card on top.
-    const withoutTop =
-      prev.slice(0, -1);
+    setCurrent(nextPhotoIndex);
 
     return [
-      ...withoutTop,
+      ...shifted,
       newCard,
     ];
   });
 };
 
-    const bringToTop = (cardId) => {
-  const selectedCard = stack.find(
+const bringToTop = (cardId) => {
+  if (liftingCard !== null) return;
+
+  const selectedIndex = stack.findIndex(
     (card) => card.id === cardId
   );
 
-  if (!selectedCard) return;
+  if (selectedIndex === -1) return;
 
-  if (selectedCard.id === topCard?.id) return;
+  if (selectedIndex === stack.length - 1) return;
 
+  const selectedCard = stack[selectedIndex];
+
+  // Именно выбранная карточка начинает движение.
   setLiftingCard(cardId);
 
   setTimeout(() => {
     setStack((prev) => {
-      const selected = prev.find(
+      const index = prev.findIndex(
         (card) => card.id === cardId
       );
 
-      if (!selected) return prev;
+      if (index === -1) return prev;
 
-      const withoutSelected = prev.filter(
+      const selected = prev[index];
+
+      // Убираем выбранную карточку из её старого места.
+      const remaining = prev.filter(
         (card) => card.id !== cardId
       );
 
-      const updatedStack = withoutSelected.map(
+      // Все оставшиеся карточки сохраняют свою
+      // физическую идентичность, но занимают уровни
+      // стопки последовательно.
+      const reordered = remaining.map(
         (card, index) => ({
           ...card,
           poseIndex: index,
         })
       );
 
+      // Выбранная карточка становится физически верхней.
       return [
-        ...updatedStack,
+        ...reordered,
         {
           ...selected,
-          poseIndex: Math.min(
-            updatedStack.length,
-            STACK_POSES.length - 1
-          ),
+          poseIndex: reordered.length,
         },
       ];
     });
 
     setCurrent(selectedCard.photoIndex);
 
+    // Убираем режим lifting только после того,
+    // как перестановка завершилась.
     setTimeout(() => {
       setLiftingCard(null);
-    }, 50);
-  }, 500);
+    }, 100);
+  }, 450);
 };
 
-  const next = () => {
-    addNextCard();
-  };
+const next = () => {
+  addNextCard();
+};
 
-  const prev = () => {
-  setLiftingCard(null);
+const prev = () => {
+  if (liftingCard !== null) return;
 
   setStack((prev) => {
-    if (prev.length <= 1) {
-      return prev;
-    }
+    if (prev.length <= 1) return prev;
 
-    const oldTop =
-      prev[prev.length - 1];
-
-    const newTop =
-      prev[prev.length - 2];
+    const oldTop = prev[prev.length - 1];
+    const belowTop = prev[prev.length - 2];
 
     const reordered = [
       ...prev.slice(0, -2),
       oldTop,
-      newTop,
+      belowTop,
     ];
 
-    setCurrent(
-      newTop.photoIndex
-    );
+    setCurrent(belowTop.photoIndex);
 
     return reordered;
   });
@@ -367,7 +367,7 @@ const isTop =
         y: pose.y,
         rotate: pose.rotate,
         scale: pose.scale,
-        zIndex: stackIndex + 1,
+        zIndex: card.poseIndex + 1,
       }
 }
                   exit={{

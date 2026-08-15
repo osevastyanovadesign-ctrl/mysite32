@@ -327,15 +327,15 @@ const nextCardId = useRef(1);
                     scale: 0.92,
                   }}
                   animate={
- isLifting
-  ? {
-      opacity: 1,
-      x: 120,
-      y: -180,
-      rotate: pose.rotate + 12,
-      scale: 1.04,
-      zIndex: 100,
-    }
+  isLifting
+    ? {
+        opacity: 1,
+        x: 0,
+        y: 0,
+        rotate: 0,
+        scale: 1.12,
+        zIndex: 100,
+      }
     : {
         opacity: 1,
         x: pose.x,

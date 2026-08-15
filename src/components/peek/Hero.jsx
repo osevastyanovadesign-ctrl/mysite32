@@ -330,7 +330,7 @@ const nextCardId = useRef(1);
   isLifting
     ? {
         opacity: 1,
-        x: "-30vw",
+        x: "-25vw",
         y: 0,
         rotate: 0,
         scale: 1.12,

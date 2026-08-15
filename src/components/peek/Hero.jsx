@@ -308,7 +308,7 @@ const didDragRef = useRef(false);
   {/* Blurred photograph — becomes the soft passe-partout */}
   <div className="absolute inset-0 overflow-hidden">
     <Image
-      src={HERO_MUG}
+      src={heroEditorial}
       alt=""
       aria-hidden="true"
       className="absolute inset-0 w-full h-full object-cover scale-[1.14] blur-[24px]"

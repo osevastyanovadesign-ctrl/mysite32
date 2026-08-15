@@ -85,19 +85,19 @@ export default function Hero() {
 
   // Physical cards from bottom → top.
 // Each card has its own permanent identity.
-const [stack, setStack] = useState(
-  Array.from({ length: MAX_STACK }, (_, index) => ({
-    id: index,
-    photoIndex: index,
-    poseIndex: index,
-  }))
-);
+const [stack, setStack] = useState([
+  {
+    id: 0,
+    photoIndex: 0,
+  },
+]);
 
 const [current, setCurrent] = useState(0);
 
+// Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
 
-const nextCardId = useRef(MAX_STACK);
+const nextCardId = useRef(1);
 
   useEffect(() => {
     if (!open) return;
@@ -146,128 +146,109 @@ const nextCardId = useRef(MAX_STACK);
   };
 
   // ------------------------------------------------------------
-// Stack
-// ------------------------------------------------------------
+  // Stack
+  // ------------------------------------------------------------
 
-const topCard = stack[stack.length - 1];
+  const topCard = stack[stack.length - 1];
 
-const addNextCard = () => {
+  const addNextCard = () => {
   setLiftingCard(null);
 
   setStack((prev) => {
-    if (prev.length === 0) return prev;
+    const lastPhotoIndex =
+      prev[prev.length - 1].photoIndex;
 
-    const oldTop = prev[prev.length - 1];
-
-    const nextPhotoIndex =
-      (oldTop.photoIndex + 1) %
+    const nextIndex =
+      (lastPhotoIndex + 1) %
       HERO_GALLERY.length;
 
     const newCard = {
       id: nextCardId.current++,
-      photoIndex: nextPhotoIndex,
-      poseIndex: 0,
+      photoIndex: nextIndex,
     };
 
-    // Верхняя физическая карточка уходит из стопки.
-    // Остальные карточки поднимаются на один уровень.
-    const shifted = prev
-      .slice(0, -1)
-      .map((card, index) => ({
-        ...card,
-        poseIndex: index + 1,
-      }));
+    setCurrent(nextIndex);
 
-    setCurrent(nextPhotoIndex);
+    // First build the physical stack.
+    if (prev.length < MAX_STACK) {
+      return [...prev, newCard];
+    }
+
+    // Stack is full.
+    // Remove the top physical card
+    // and put a new physical card on top.
+    const withoutTop =
+      prev.slice(0, -1);
 
     return [
-      ...shifted,
+      ...withoutTop,
       newCard,
     ];
   });
 };
 
-const bringToTop = (cardId) => {
-  if (liftingCard !== null) return;
-
-  const selectedIndex = stack.findIndex(
+  const bringToTop = (cardId) => {
+  const selectedCard = stack.find(
     (card) => card.id === cardId
   );
 
-  if (selectedIndex === -1) return;
+  if (!selectedCard) {
+    return;
+  }
 
-  if (selectedIndex === stack.length - 1) return;
+  if (selectedCard.id === topCard?.id) {
+    return;
+  }
 
-  const selectedCard = stack[selectedIndex];
-
-  // Именно выбранная карточка начинает движение.
   setLiftingCard(cardId);
 
   setTimeout(() => {
     setStack((prev) => {
-      const index = prev.findIndex(
-        (card) => card.id === cardId
-      );
-
-      if (index === -1) return prev;
-
-      const selected = prev[index];
-
-      // Убираем выбранную карточку из её старого места.
-      const remaining = prev.filter(
+      const withoutSelected = prev.filter(
         (card) => card.id !== cardId
       );
 
-      // Все оставшиеся карточки сохраняют свою
-      // физическую идентичность, но занимают уровни
-      // стопки последовательно.
-      const reordered = remaining.map(
-        (card, index) => ({
-          ...card,
-          poseIndex: index,
-        })
-      );
-
-      // Выбранная карточка становится физически верхней.
       return [
-        ...reordered,
-        {
-          ...selected,
-          poseIndex: reordered.length,
-        },
+        ...withoutSelected,
+        selectedCard,
       ];
     });
 
     setCurrent(selectedCard.photoIndex);
 
-    // Убираем режим lifting только после того,
-    // как перестановка завершилась.
     setTimeout(() => {
       setLiftingCard(null);
-    }, 100);
-  }, 450);
+    }, 500);
+  }, 420);
 };
 
-const next = () => {
-  addNextCard();
-};
+  const next = () => {
+    addNextCard();
+  };
 
-const prev = () => {
-  if (liftingCard !== null) return;
+  const prev = () => {
+  setLiftingCard(null);
 
   setStack((prev) => {
-    if (prev.length <= 1) return prev;
+    if (prev.length <= 1) {
+      return prev;
+    }
 
-    const oldTop = prev[prev.length - 1];
-    const belowTop = prev[prev.length - 2];
+    const oldTop =
+      prev[prev.length - 1];
+
+    const newTop =
+      prev[prev.length - 2];
 
     const reordered = [
       ...prev.slice(0, -2),
       oldTop,
-      belowTop,
+      newTop,
     ];
 
-    setCurrent(belowTop.photoIndex);
+    setCurrent(
+      newTop.photoIndex
+    );
 
     return reordered;
   });
@@ -322,23 +303,22 @@ const prev = () => {
             aspect-[3/4]
           "
         >
-          <div>
-         {stack.map((card, stackIndex) => {
+          <AnimatePresence initial={false}>
+            {stack.map((card, stackIndex) => {
              const photoIndex = card.photoIndex;
+              const pose =
+                STACK_POSES[
+                  Math.min(
+                    stackIndex,
+                    STACK_POSES.length - 1
+                  )
+                ];
 
-const isLifting =
-  liftingCard === card.id;
+              const isTop =
+                stackIndex === stack.length - 1;
 
-const pose =
-  STACK_POSES[
-    Math.min(
-      card.poseIndex,
-      STACK_POSES.length - 1
-    )
-  ];
-
-const isTop =
-  stackIndex === stack.length - 1;
+              const isLifting =
+               liftingCard === card.id;
 
               return (
                 <motion.div
@@ -366,7 +346,7 @@ const isTop =
         y: pose.y,
         rotate: pose.rotate,
         scale: pose.scale,
-        zIndex: card.poseIndex + 1,
+        zIndex: stackIndex + 1,
       }
 }
                   exit={{
@@ -544,8 +524,8 @@ const isTop =
                 </motion.div>
               );
             })}
+          </AnimatePresence>
         </div>
-      </div>
 
         {/* =====================================================
             EXPANDED HERO GALLERY

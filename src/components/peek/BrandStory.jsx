@@ -23,11 +23,11 @@ export default function BrandStory() {
           </Reveal>
           <Reveal delay={0.15} className="md:col-span-5">
             <Image
-              src={LIFESTYLE_IMAGE}
-              alt="A quiet sunlit morning with a single mug and an open book"
-              className="w-full aspect-[4/3] object-cover squircle-lg"
-              fittingType="fill"
-            />
+  src={LIFESTYLE_IMAGE}
+  alt="A quiet sunlit morning with a single mug and an open book"
+  className="w-full aspect-[4/3] object-cover squircle"
+  fittingType="fill"
+/>
           </Reveal>
         </div>
 

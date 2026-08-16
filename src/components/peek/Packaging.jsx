@@ -14,12 +14,14 @@ export default function Packaging() {
     <section id="keepsake" className="py-28 md:py-40">
       <div className="mx-auto max-w-7xl px-6 md:px-10 grid md:grid-cols-12 gap-12 items-center">
         <Reveal className="md:col-span-5 order-2 md:order-1">
-          <Image
-            src={PACKAGING_IMAGE}
-            alt="Raw kraft packaging with a die-cut hole, an animal peeking through"
-            className="w-full aspect-[4/3] object-cover squircle-lg shadow-xl"
-            fittingType="fill"
-          />
+          <div className="relative overflow-hidden squircle">
+  <Image
+    src={PACKAGING_IMAGE}
+    alt="Raw kraft packaging with a die-cut hole, an animal peeking through"
+    className="block w-full aspect-[4/3] object-cover"
+    fittingType="fill"
+  />
+</div>
         </Reveal>
 
         <div className="md:col-span-7 order-1 md:order-2">

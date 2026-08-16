@@ -310,10 +310,10 @@ const didDragRef = useRef(false);
             scale: 1,
           }}
           transition={{
-            duration: 1.2,
-            delay: 0.2,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+  duration: 0.7,
+  delay: 0,
+  ease: [0.22, 1, 0.36, 1],
+}}
         >
 <div className="relative w-full aspect-[4/3] overflow-hidden">
   {/* Main photo */}

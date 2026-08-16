@@ -590,7 +590,7 @@ onDragEnd={(event, info) => {
     w-full
     h-full
     bg-white
-    rounded-2xl
+    squircle
     overflow-hidden
     p-3
     md:p-4

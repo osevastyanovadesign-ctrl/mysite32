@@ -34,57 +34,47 @@ const HERO_GALLERY = [
 
 const STACK_POSES = [
   {
-    rotate: 5,
-    x: -14,
-    y: 12,
-    scale: 0.965,
-    origin: "bottom left",
-  },
-
-  // 2
-  {
-    rotate: -7,
-    x: -10,
-    y: 6,
-    scale: 0.972,
-    origin: "top right",
-  },
-
-  // 3
-  {
-    rotate: 4,
-    x: 11,
-    y: -2,
-    scale: 0.98,
-    origin: "bottom right",
-  },
-
-  // 4
-  {
-    rotate: -6,
-    x: -7,
-    y: 8,
-    scale: 0.986,
-    origin: "top left",
-  },
-
-  // 5
-  {
-    rotate: 7,
-    x: 8,
-    y: -5,
-    scale: 0.993,
-    origin: "bottom left",
-  },
-
-  // 6 — верхняя
-  {
-    rotate: -2,
-    x: 0,
-    y: 0,
-    scale: 1,
-    origin: "center center",
-  },
+  rotate: 6,
+  x: -32,
+  y: 22,
+  scale: 0.965,
+  origin: "bottom left",
+},
+{
+  rotate: -9,
+  x: 24,
+  y: 12,
+  scale: 0.972,
+  origin: "top right",
+},
+{
+  rotate: 5,
+  x: -22,
+  y: -6,
+  scale: 0.98,
+  origin: "bottom right",
+},
+{
+  rotate: -7,
+  x: 18,
+  y: 10,
+  scale: 0.986,
+  origin: "top left",
+},
+{
+  rotate: 8,
+  x: -10,
+  y: -8,
+  scale: 0.993,
+  origin: "bottom left",
+},
+{
+  rotate: -2,
+  x: 0,
+  y: 0,
+  scale: 1,
+  origin: "center center",
+},
 ];
 
 const MAX_STACK = 6;

@@ -399,7 +399,7 @@ const didDragRef = useRef(false);
         <div
           className="
             absolute
-            right-40
+            right-[20%]
             inset-y-0
             my-auto
             w-[320px]

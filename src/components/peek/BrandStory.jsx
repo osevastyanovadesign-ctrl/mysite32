@@ -25,7 +25,7 @@ export default function BrandStory() {
             <Image
               src={LIFESTYLE_IMAGE}
               alt="A quiet sunlit morning with a single mug and an open book"
-              className="w-full aspect-[4/3] object-cover squircle-lg shadow-xl"
+              className="w-full aspect-[4/3] object-cover squircle-lg"
               fittingType="fill"
             />
           </Reveal>

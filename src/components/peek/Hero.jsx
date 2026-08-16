@@ -491,7 +491,7 @@ onDragEnd={(event, info) => {
         : isLifting
         ? {
             opacity: 1,
-            x: "-22vw",
+            x: "-23vw",
             y: 0,
             rotate: 0,
             scale: 1.28,

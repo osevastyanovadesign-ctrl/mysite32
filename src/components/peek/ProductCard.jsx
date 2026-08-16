@@ -32,11 +32,11 @@ export default function ProductCard({ product, onOpen }) {
       style={{ rotateX, rotateY, transformPerspective: 900 }}
       className="group text-left block w-full"
     >
-      <div className="relative overflow-hidden squircle bg-secondary/40">
+      <div className="relative overflow-hidden squircle bg-secondary/40 leading-[0]">
         <Image
           src={product.image}
           alt={`${product.animal[lang]} mug — ${product.name[lang]}`}
-          className="w-full aspect-[3/4] object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
+          className="block w-full aspect-[3/4] object-cover transition-transform duration-[1.2s] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06]"
           fittingType="fill"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-foreground/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

@@ -467,10 +467,10 @@ onDragEnd={(event, info) => {
 }}
     initial={{
   opacity: 0,
-  x: pose.x + 35,
-  y: pose.y - 80,
-  rotate: pose.rotate + 8,
-  scale: pose.scale,
+  x: card.dragX,
+  y: card.dragY,
+  rotate: card.initialRotate,
+  scale: 0.92,
 }}
     animate={
       draggingCard === card.id

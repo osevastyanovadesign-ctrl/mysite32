@@ -51,17 +51,82 @@ export default function TierShowcase({ tier }) {
       <div className="relative">
 
         {/* Full-width editorial stage */}
-        <div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden aspect-[4/3]">
+<div className="relative w-screen ml-[calc(50%-50vw)] overflow-hidden aspect-[4/3]">
 
-          {/* Large calm editorial photograph */}
-          <div className="relative w-full overflow-hidden bg-secondary/40">
-            <Image
-              src={tier.image}
-              alt={tier.alt[lang]}
-              className="w-full aspect-[4/3] object-cover"
-              fittingType="fill"
-            />
-          </div>
+  {/* Large calm editorial photograph — blended into the page */}
+  <div
+    className="
+      absolute
+      top-0
+      left-[4%]
+      w-[92%]
+      h-[92%]
+      overflow-hidden
+    "
+    style={{
+      maskImage: `
+        linear-gradient(
+          to bottom,
+          transparent 0%,
+          black 10%,
+          black 76%,
+          transparent 100%
+        ),
+        linear-gradient(
+          to right,
+          transparent 0%,
+          black 8%,
+          black 92%,
+          transparent 100%
+        )
+      `,
+      maskComposite: "intersect",
+      WebkitMaskImage: `
+        linear-gradient(
+          to bottom,
+          transparent 0%,
+          black 10%,
+          black 76%,
+          transparent 100%
+        ),
+        linear-gradient(
+          to right,
+          transparent 0%,
+          black 8%,
+          black 92%,
+          transparent 100%
+        )
+      `,
+      WebkitMaskComposite: "source-in",
+    }}
+  >
+    <Image
+      src={tier.image}
+      alt={tier.alt[lang]}
+      className="w-full h-full object-cover"
+      fittingType="fill"
+    />
+  </div>
+
+  {/* Soft side edges — same visual language as Hero */}
+  <div
+    className="
+      pointer-events-none
+      absolute
+      inset-0
+    "
+    style={{
+      background: `
+        linear-gradient(
+          to right,
+          hsl(var(--background)) 0%,
+          transparent 9%,
+          transparent 91%,
+          hsl(var(--background)) 100%
+        )
+      `,
+    }}
+  />
 
           {/* Vertical order card */}
           <motion.div

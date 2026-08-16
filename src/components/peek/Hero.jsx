@@ -103,7 +103,7 @@ const createInitialStack = () => {
     { x: 155, y: -45, rotate: -5 },
     { x: -105, y: 55, rotate: 7 },
     { x: 65, y: 80, rotate: -7 },
-    { x: 190, y: 105, rotate: 5 },
+    { x: 190, y: 105, rotate: 10 },
   ];
 
   return positions.map((position, index) => ({

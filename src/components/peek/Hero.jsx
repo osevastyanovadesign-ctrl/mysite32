@@ -98,13 +98,13 @@ export default function Hero() {
 // Each card has its own permanent identity.
 const createInitialStack = () => {
   const positions = [
-  { x: -130, y: -95, rotate: -6 },
-  { x: -25, y: -55, rotate: 5 },
-  { x: -95, y: 35, rotate: 4 },
-  { x: 35, y: 55, rotate: -7 },
-  { x: -55, y: 115, rotate: 6 },
-  { x: 55, y: -115, rotate: -3 },
-];
+    { x: -150, y: -95, rotate: -8 },
+    { x: 35, y: -125, rotate: 6 },
+    { x: 155, y: -45, rotate: -5 },
+    { x: -105, y: 55, rotate: 7 },
+    { x: 65, y: 80, rotate: -7 },
+    { x: 190, y: 105, rotate: 5 },
+  ];
 
   return positions.map((position, index) => ({
     id: index,
@@ -476,12 +476,12 @@ onDragEnd={(event, info) => {
   }, 0);
 }}
     initial={{
-      opacity: 0,
-      x: 45,
-      y: -100,
-      rotate: pose.rotate + 10,
-      scale: 0.92,
-    }}
+  opacity: 0,
+  x: card.dragX + 70,
+  y: card.dragY - 45,
+  rotate: card.initialRotate + 8,
+  scale: 0.94,
+}}
     animate={
       draggingCard === card.id
         ? {
@@ -498,13 +498,13 @@ onDragEnd={(event, info) => {
             zIndex: 100,
           }
         :{
-    opacity: 1,
-    x: pose.x + card.dragX,
-    y: pose.y + card.dragY,
-    rotate: pose.rotate,
-    scale: pose.scale,
-    zIndex: stackIndex + 1,
-  }
+  opacity: 1,
+  x: card.dragX,
+  y: card.dragY,
+  rotate: card.initialRotate,
+  scale: 1,
+  zIndex: stackIndex + 1,
+}
     }
     exit={{
       opacity: 0,

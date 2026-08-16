@@ -608,7 +608,6 @@ onDragEnd={(event, info) => {
     w-full
     h-[80%]
     overflow-hidden
-    squircle
     bg-secondary/20
   "
 >

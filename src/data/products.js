@@ -158,6 +158,32 @@ export const PRODUCTS = [
       "Благородный олень с рогами. Смотрит прямо на вас сквозь разорванный край. Ручная иллюстрация, обожжённая керамика."
     ),
   },
+    {
+    id: "badger",
+    price: 32,
+    image: "https://media.base44.com/images/public/6a74367b534263a38dd99a70/83efb2335_generated_be9a25a3.png",
+    name: L("Stay Curious", "Bleib neugierig", "Ostani radoznao", "Оставайся любопытным"),
+    animal: L("Badger", "Dachs", "Jazavac", "Барсук"),
+    narrative: L(
+      "A curious badger with a steady gaze. Hand-illustrated, white ceramic, 350 ml.",
+      "Ein neugieriger Dachs mit ruhigem Blick. Handgezeichnet, weiße Keramik, 350 ml.",
+      "Radoznali jazavac mirnog pogleda. Ručno ilustrovano, bela keramika, 350 ml.",
+      "Любопытный барсук со спокойным взглядом. Ручная иллюстрация, белая керамика, 350 мл."
+    ),
+  },
+  {
+    id: "horse",
+    price: 34,
+    image: "https://media.base44.com/images/public/6a74367b534263a38dd99a70/36ac4fb1b_generated_4a2b6179.png",
+    name: L("Caught Looking", "Erwischt", "Uhvaćen pogledom", "Попался"),
+    animal: L("Horse", "Pferd", "Konj", "Лошадь"),
+    narrative: L(
+      "A quiet horse caught looking straight back at you. Hand-illustrated, white ceramic, 350 ml.",
+      "Ein ruhiges Pferd, das dir direkt entgegenblickt. Handgezeichnet, weiße Keramik, 350 ml.",
+      "Miran konj koji ti uzvraća pogled. Ručno ilustrovano, bela keramika, 350 ml.",
+      "Спокойная лошадь, поймавшая ваш взгляд. Ручная иллюстрация, белая керамика, 350 мл."
+    ),
+  },
 ];
 
 // Series 02 & 03 — bespoke commission work (no fixed price, no modal).

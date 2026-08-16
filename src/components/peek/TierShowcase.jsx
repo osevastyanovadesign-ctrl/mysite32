@@ -151,9 +151,10 @@ export default function TierShowcase({ tier }) {
               lg:w-[22%]
               aspect-[3/4]
               bg-background
+              squircle
               p-6
               md:p-8
-              shadow-2xl
+              shadow-[0_12px_30px_rgba(0,0,0,0.16)]
             "
           >
             <div className="flex h-full flex-col justify-between">

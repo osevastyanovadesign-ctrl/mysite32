@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { BRAND, MASCOT_DACHSHUND } from "@/data/products";
+import { BRAND } from "@/data/products";
+import mascotDog from "@/assets/peek-mascot-dog.webp";
 import { useLang } from "./LanguageContext";
 import Reveal from "./Reveal";
 
@@ -37,7 +38,7 @@ export default function Voice() {
             transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             className="relative w-[70%] md:w-[85%]"
           >
-            <img src={MASCOT_DACHSHUND} alt="The Peek mascot — a red dachshund" className="w-full h-auto" />
+            <img src={mascotDog} alt="The Peek mascot — a red dachshund" className="w-full h-auto" />
             <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-2/3 h-6 bg-primary/10 blur-2xl rounded-full" />
           </motion.div>
         </Reveal>

@@ -19,7 +19,7 @@ import {
 import { Image } from "@/components/ui/image";
 import { HERO_MUG } from "@/data/products";
 import { useLang } from "./LanguageContext";
-import heroEditorial from "@/assets/peek-hero-editorial.jpg";
+import heroEditorial from "@/assets/peek-hero-editorial.webp";
 
 // Temporary Hero gallery.
 // Replace these images later with the final editorial photographs.

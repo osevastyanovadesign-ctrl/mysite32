@@ -301,14 +301,14 @@ const didDragRef = useRef(false);
       {/* Hero photograph */}
       <div className="relative w-full">
         <motion.div
-          initial={{
-            opacity: 0,
-            scale: 0.96,
-          }}
-          animate={{
-            opacity: 1,
-            scale: 1,
-          }}
+  initial={{
+    opacity: 1,
+    scale: 1,
+  }}
+  animate={{
+    opacity: 1,
+    scale: 1,
+  }}
           transition={{
   duration: 0.7,
   delay: 0,

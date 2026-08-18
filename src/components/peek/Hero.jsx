@@ -300,21 +300,6 @@ const didDragRef = useRef(false);
     >
       {/* Hero photograph */}
       <div className="relative w-full">
-        <motion.div
-  initial={{
-    opacity: 1,
-    scale: 1,
-  }}
-  animate={{
-    opacity: 1,
-    scale: 1,
-  }}
-          transition={{
-  duration: 0.7,
-  delay: 0,
-  ease: [0.22, 1, 0.36, 1],
-}}
-        >
 <div className="relative w-full aspect-[4/3] overflow-hidden">
   {/* Main photo */}
   <div
@@ -389,8 +374,6 @@ const didDragRef = useRef(false);
     }}
   />
 </div>
-
-        </motion.div>
 
         {/* =====================================================
             POLAROID STACK

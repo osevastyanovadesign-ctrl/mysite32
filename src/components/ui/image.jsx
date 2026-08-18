@@ -84,7 +84,7 @@ const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children
 ImageWrapper.displayName = "ImageWrapper"
 
 const ResponsiveImage = React.forwardRef(
-  ({ parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, ...props }, parentRef) => {
+  ({ parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, loading = "lazy", ...props }, parentRef) => {
     const wrapperRef = React.useRef(null)
     const imgRef = React.useRef(null)
     const size = useSize(wrapperRef)
@@ -147,7 +147,7 @@ const ResponsiveImage = React.forwardRef(
             ref={imgRef}
             src={buildTransformUrl(parsed, options)}
             srcSet={buildSrcSet(parsed, options)}
-            loading="lazy"
+            loading={loading}
             className={cn(
               "w-full h-full inset-0 absolute",
               fittingType === "fit" ? "object-contain" : "object-cover"

@@ -121,9 +121,53 @@ const createInitialStack = () => {
   }));
 };
 
-const [stack, setStack] = useState(createInitialStack);
+const [stack, setStack] = useState(() => {
+  const initialStack = createInitialStack();
+
+  return [initialStack[0]];
+});
 
 const [current, setCurrent] = useState(0);
+  const [introComplete, setIntroComplete] = useState(false);
+  useEffect(() => {
+  let cancelled = false;
+
+  const buildStack = createInitialStack();
+
+  const addCard = (index) => {
+    if (cancelled) return;
+
+    setStack((prev) => {
+      if (prev.some((card) => card.id === buildStack[index].id)) {
+        return prev;
+      }
+
+      return [
+        ...prev,
+        buildStack[index],
+      ];
+    });
+
+    if (index === buildStack.length - 1) {
+      setIntroComplete(true);
+    }
+  };
+
+  const timers = [];
+
+  for (let i = 1; i < buildStack.length; i++) {
+    timers.push(
+      setTimeout(() => {
+        addCard(i);
+      }, 250 * i)
+    );
+  }
+
+  return () => {
+    cancelled = true;
+    timers.forEach(clearTimeout);
+  };
+}, []);
 
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);

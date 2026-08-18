@@ -361,12 +361,12 @@ const didDragRef = useRef(false);
   WebkitMaskComposite: "source-in",
 }}
   >
-    <Image
+    <img
   src={heroEditorial}
   alt="A white Peek ceramic mug with the Eva dachshund print"
   className="w-full h-full object-cover"
-  fittingType="fill"
-  loading="eager"
+  fetchPriority="high"
+  decoding="async"
 />
   </div>
 

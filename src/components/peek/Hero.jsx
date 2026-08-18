@@ -362,11 +362,12 @@ const didDragRef = useRef(false);
 }}
   >
     <Image
-      src={heroEditorial}
-      alt="A white Peek ceramic mug with the Eva dachshund print"
-      className="w-full h-full object-cover"
-      fittingType="fill"
-    />
+  src={heroEditorial}
+  alt="A white Peek ceramic mug with the Eva dachshund print"
+  className="w-full h-full object-cover"
+  fittingType="fill"
+  loading="eager"
+/>
   </div>
 
   {/* Soft side edges */}

@@ -365,7 +365,6 @@ const didDragRef = useRef(false);
   src={heroEditorial}
   alt="A white Peek ceramic mug with the Eva dachshund print"
   className="w-full h-full object-cover"
-  loading="eager"
   fetchPriority="high"
   decoding="async"
 />

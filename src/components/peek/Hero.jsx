@@ -17,19 +17,18 @@ import {
   X,
 } from "lucide-react";
 import { Image } from "@/components/ui/image";
-import { HERO_MUG } from "@/data/products";
 import { useLang } from "./LanguageContext";
 import heroEditorial from "@/assets/peek-hero-editorial.webp";
 
 // Temporary Hero gallery.
 // Replace these images later with the final editorial photographs.
 const HERO_GALLERY = [
-  HERO_MUG,
-  "https://media.base44.com/images/public/6a74367b534263a38dd99a70/83efb2335_generated_be9a25a3.png",
-  "https://media.base44.com/images/public/6a74367b534263a38dd99a70/36ac4fb1b_generated_4a2b6179.png",
-  "https://media.base44.com/images/public/6a74367b534263a38dd99a70/28b7cf839_generated_a19c3ac2.png",
-  "https://media.base44.com/images/public/6a74367b534263a38dd99a70/20f41a2b0_generated_eb2dbd39.png",
-  "https://media.base44.com/images/public/6a74367b534263a38dd99a70/30f1ad508_generated_image.png",
+  hero01,
+  hero02,
+  hero03,
+  hero04,
+  hero05,
+  hero06,
 ];
 
 const STACK_POSES = [

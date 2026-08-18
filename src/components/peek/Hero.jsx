@@ -18,7 +18,14 @@ import {
 } from "lucide-react";
 import { Image } from "@/components/ui/image";
 import { useLang } from "./LanguageContext";
+
 import heroEditorial from "@/assets/peek-hero-editorial.webp";
+import hero01 from "@/assets/hero-01.webp";
+import hero02 from "@/assets/hero-02.webp";
+import hero03 from "@/assets/hero-03.webp";
+import hero04 from "@/assets/hero-04.webp";
+import hero05 from "@/assets/hero-05.webp";
+import hero06 from "@/assets/hero-06.webp";
 
 // Temporary Hero gallery.
 // Replace these images later with the final editorial photographs.

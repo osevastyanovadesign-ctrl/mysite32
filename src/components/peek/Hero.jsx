@@ -121,53 +121,90 @@ const createInitialStack = () => {
   }));
 };
 
-const [stack, setStack] = useState(() => {
-  const initialStack = createInitialStack();
-
-  return [initialStack[0]];
-});
-
+const [stack, setStack] = useState([]);
 const [current, setCurrent] = useState(0);
-  const [introComplete, setIntroComplete] = useState(false);
-  useEffect(() => {
+const [introComplete, setIntroComplete] = useState(false);
+const [heroReady, setHeroReady] = useState(false);
+
+useEffect(() => {
+  const img = new window.Image();
+
+  img.src = heroEditorial;
+
+  if (img.complete) {
+    setHeroReady(true);
+    return;
+  }
+
+  img.onload = () => {
+    setHeroReady(true);
+  };
+
+  img.onerror = () => {
+    setHeroReady(true);
+  };
+}, []);
+
+useEffect(() => {
+  if (!heroReady) return;
+
   let cancelled = false;
 
   const buildStack = createInitialStack();
 
-  const addCard = (index) => {
-    if (cancelled) return;
+  const loadImage = (src) =>
+    new Promise((resolve) => {
+      const img = new window.Image();
 
-    setStack((prev) => {
-      if (prev.some((card) => card.id === buildStack[index].id)) {
-        return prev;
-      }
-
-      return [
-        ...prev,
-        buildStack[index],
-      ];
+      img.onload = resolve;
+      img.onerror = resolve;
+      img.src = src;
     });
 
-    if (index === buildStack.length - 1) {
-      setIntroComplete(true);
+  const build = async () => {
+    for (let i = 0; i < buildStack.length; i++) {
+      if (cancelled) return;
+
+      // Сначала ждём, пока фотография этой карточки загрузится.
+      await loadImage(HERO_GALLERY[i]);
+
+      if (cancelled) return;
+
+      // Теперь добавляем уже готовую карточку.
+      setStack((prev) => {
+        if (
+          prev.some(
+            (card) => card.id === buildStack[i].id
+          )
+        ) {
+          return prev;
+        }
+
+        return [
+          ...prev,
+          buildStack[i],
+        ];
+      });
+
+      if (i === buildStack.length - 1) {
+        setIntroComplete(true);
+      }
+
+      // Ритм между карточками.
+      if (i < buildStack.length - 1) {
+        await new Promise((resolve) =>
+          setTimeout(resolve, 180)
+        );
+      }
     }
   };
 
-  const timers = [];
-
-  for (let i = 1; i < buildStack.length; i++) {
-    timers.push(
-      setTimeout(() => {
-        addCard(i);
-      }, 250 * i)
-    );
-  }
+  build();
 
   return () => {
     cancelled = true;
-    timers.forEach(clearTimeout);
   };
-}, []);
+}, [heroReady]);
 
 // Physical card currently being lifted.
 const [liftingCard, setLiftingCard] = useState(null);
@@ -175,7 +212,7 @@ const [draggingCard, setDraggingCard] = useState(null);
 
 // Card currently being dragged by the mouse.
 
-const nextCardId = useRef(1);
+const nextCardId = useRef(6);
 const didDragRef = useRef(false);
 
   useEffect(() => {
